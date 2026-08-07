@@ -3,873 +3,2081 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#16283C">
-<meta name="description" content="Demostración de asistente virtual institucional. Datos de ejemplo.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316283C'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='30' fill='%23E7D0AE' text-anchor='middle'%3ECA%3C/text%3E%3C/svg%3E">
-<title>Asistente virtual · Colegio de Arquitectos de Costa Rica</title>
+<meta name="theme-color" content="#10192E">
+<meta name="description" content="Ventanilla digital del Colegio de Arquitectos de Costa Rica. Demostración con datos de ejemplo.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310192E'/%3E%3Cpath d='M32 16 L46 46 H18 Z' fill='none' stroke='%23C69B5E' stroke-width='3'/%3E%3C/svg%3E">
+<title>Ventanilla digital · Colegio de Arquitectos de Costa Rica</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"></noscript>
+
 <style>
-  :root{
-    --ink:#16283C;
-    --ink-deep:#0E1C2B;
-    --canvas:#F3F0EA;
-    --bot:#FFFFFF;
-    --user:#1E3550;
-    --accent:#A9763F;
-    --accent-soft:#EFE2D3;
-    --text:#1B2733;
-    --muted:#6E7C8A;
-    --line:#E2DDD4;
-    --radius:18px;
-    --shadow:0 1px 2px rgba(15,28,43,.06), 0 8px 24px rgba(15,28,43,.06);
-    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
-    color-scheme:light;
-  }
-  *,*::before,*::after{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:var(--sans);
-    color:var(--text);
-    background:#0D1826;
-    background:radial-gradient(1100px 620px at 50% -12%, #26425F 0%, #142438 45%, #0B1420 100%);
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-    overflow:hidden;
-  }
+/* ============================================================
+   Ventanilla digital — Colegio de Arquitectos de Costa Rica
+   Demostración. Datos de ejemplo. Mana Solutions.
+   ============================================================ */
 
-  /* ---------- shell ---------- */
+:root{
+  --navy:#10192E;
+  --navy-2:#182742;
+  --navy-3:#0A1120;
+  --paper:#F7F3EC;
+  --paper-2:#FFFDF9;
+  --ink:#1A2333;
+  --ink-2:#33404F;
+  --muted:#6B7686;
+  --bronze:#A8763E;
+  --bronze-l:#C69B5E;
+  --bronze-soft:#F0E4D2;
+  --line:#E4DCCF;
+  --line-2:#F0EAE0;
+  --ok:#2C7A56;
+  --r:14px;
+  --shadow-s:0 1px 2px rgba(16,25,46,.05);
+  --shadow-m:0 1px 2px rgba(16,25,46,.05), 0 10px 26px rgba(16,25,46,.07);
+  --shadow-l:0 24px 60px rgba(6,12,24,.5);
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif:"Fraunces",ui-serif,Georgia,"Times New Roman",Times,serif;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:var(--sans);
+  font-size:15px;
+  color:var(--ink);
+  background:var(--navy-3);
+  background:
+    radial-gradient(1200px 700px at 50% -14%, #223A58 0%, #15243B 42%, #08101D 100%);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow:hidden;
+}
+/* very low-contrast architectural line grid on the backdrop */
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(198,155,94,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,155,94,.055) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+  background-size:104px 104px,104px 104px,13px 13px,13px 13px;
+  -webkit-mask-image:radial-gradient(1100px 760px at 50% 42%, #000 0%, transparent 76%);
+          mask-image:radial-gradient(1100px 760px at 50% 42%, #000 0%, transparent 76%);
+}
+
+/* ---------------- shell ---------------- */
+.app{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;
+  width:100%;max-width:480px;
+  height:100vh;height:100dvh;
+  margin:0 auto;
+  background:var(--paper);
+  overflow:hidden;
+  isolation:isolate;
+}
+@media (min-width:600px) and (min-height:660px){
+  body{display:flex;align-items:center;justify-content:center;padding:26px 16px}
   .app{
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    width:100%;
-    max-width:460px;
-    height:100vh;
-    height:100dvh;
-    margin:0 auto;
-    background:var(--canvas);
-    overflow:hidden;
-    isolation:isolate;
+    height:min(880px, calc(100dvh - 52px));
+    border-radius:20px;
+    box-shadow:var(--shadow-l), 0 0 0 1px rgba(198,155,94,.16);
   }
-  @media (min-width:560px) and (min-height:640px){
-    body{display:flex;align-items:center;justify-content:center;padding:28px 16px}
-    .app{
-      height:min(860px, calc(100dvh - 56px));
-      border-radius:22px;
-      box-shadow:0 30px 70px rgba(5,12,22,.55), 0 2px 0 rgba(255,255,255,.06) inset;
-    }
-  }
+}
 
-  /* ---------- header ---------- */
-  header{
-    flex:0 0 auto;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:14px 16px;
-    padding-top:max(14px, env(safe-area-inset-top));
-    background:linear-gradient(180deg, #1B3049 0%, var(--ink) 100%);
-    color:#fff;
-    border-bottom:1px solid rgba(169,118,63,.55);
-    box-shadow:0 6px 18px rgba(11,20,32,.18);
-    z-index:3;
-  }
-  .mono{
-    flex:0 0 auto;
-    width:44px;height:44px;
-    display:grid;place-items:center;
-    border-radius:50%;
-    background:linear-gradient(160deg,#24405E,#152841);
-    border:1.5px solid var(--accent);
-    font-family:var(--serif);
-    font-size:17px;
-    letter-spacing:.06em;
-    color:#F0DFC9;
-  }
-  .htext{min-width:0}
-  .htitle{
-    font-family:var(--serif);
-    font-size:15.5px;
-    line-height:1.25;
-    font-weight:600;
-    letter-spacing:.005em;
-    margin:0 0 3px;
-    color:#FFFFFF;
-  }
-  .hsub{
-    display:flex;align-items:center;gap:6px;
-    font-size:11.5px;
-    letter-spacing:.035em;
-    text-transform:uppercase;
-    color:#A9BDD2;
-    margin:0;
-  }
-  .dot{
-    width:6px;height:6px;border-radius:50%;
-    background:#59C08A;
-    box-shadow:0 0 0 0 rgba(89,192,138,.55);
-    animation:pulse 2.6s ease-out infinite;
-  }
-  @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(89,192,138,.5)}
-    70%{box-shadow:0 0 0 7px rgba(89,192,138,0)}
-    100%{box-shadow:0 0 0 0 rgba(89,192,138,0)}
-  }
+/* ---------------- opening title card ---------------- */
+.overture{
+  position:absolute;inset:0;z-index:60;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;padding:32px;
+  background:
+    radial-gradient(120% 80% at 50% 8%, #1D3050 0%, #101A2E 52%, #080E1A 100%);
+  color:#fff;text-align:center;
+  cursor:pointer;
+  transition:opacity .42s ease, visibility .42s;
+  -webkit-tap-highlight-color:transparent;
+}
+.overture::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(198,155,94,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,155,94,.08) 1px, transparent 1px);
+  background-size:44px 44px,44px 44px;
+  -webkit-mask-image:radial-gradient(70% 60% at 50% 50%, transparent 8%, #000 82%);
+          mask-image:radial-gradient(70% 60% at 50% 50%, transparent 8%, #000 82%);
+  opacity:.7;
+}
+.overture.gone{opacity:0;visibility:hidden;pointer-events:none}
+.ov-mark{
+  width:52px;height:52px;margin-bottom:26px;
+  opacity:0;transform:scale(.86);
+  animation:ovMark .7s cubic-bezier(.2,.7,.3,1) .05s both;
+}
+.ov-mark path{stroke:var(--bronze-l)}
+.ov-rule{
+  width:0;height:1px;background:linear-gradient(90deg,transparent,var(--bronze),transparent);
+  animation:ovRule .8s cubic-bezier(.3,.7,.25,1) .34s both;
+}
+.ov-eyebrow{
+  margin:0 0 16px;
+  font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;
+  color:rgba(198,155,94,.9);
+  opacity:0;animation:ovFade .6s ease .22s both;
+}
+.ov-title{
+  font-family:var(--serif);
+  font-weight:500;
+  font-size:clamp(25px,7.6vw,34px);
+  line-height:1.16;
+  letter-spacing:-.012em;
+  margin:22px 0 0;
+  max-width:11ch;
+  color:#FBF7F1;
+}
+.ov-title span{
+  display:block;
+  opacity:0;
+  animation:ovLine .78s cubic-bezier(.2,.75,.25,1) both;
+}
+.ov-title span:nth-child(1){animation-delay:.30s}
+.ov-title span:nth-child(2){animation-delay:.40s}
+.ov-title span:nth-child(3){animation-delay:.50s}
+.ov-sub{
+  margin:22px 0 0;
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:#93A6BD;
+  opacity:0;animation:ovFade .7s ease .92s both;
+}
+.ov-skip{
+  position:absolute;left:0;right:0;bottom:26px;
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(147,166,189,.62);
+  opacity:0;animation:ovFade .6s ease 1.25s both;
+}
+@keyframes ovMark{from{opacity:0;transform:scale(.86) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes ovRule{from{width:0;opacity:0}to{width:190px;opacity:1}}
+@keyframes ovFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes ovLine{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-  /* ---------- log ---------- */
-  .log{
-    flex:1 1 auto;
-    min-height:0;              /* lets the log shrink so chips never get clipped */
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    overscroll-behavior:contain;
-    padding:16px 14px 6px;
-    background:
-      radial-gradient(circle at 12% 8%, rgba(169,118,63,.05), transparent 42%),
-      var(--canvas);
-  }
-  .divider{
-    display:flex;align-items:center;justify-content:center;
-    margin:2px 0 14px;
-  }
-  .divider span{
-    font-size:11px;letter-spacing:.09em;text-transform:uppercase;
-    color:var(--muted);
-    background:rgba(255,255,255,.75);
-    border:1px solid var(--line);
-    border-radius:999px;
-    padding:4px 12px;
-  }
-  .note{
-    text-align:center;
-    font-size:11.5px;
-    line-height:1.5;
-    color:var(--muted);
-    max-width:82%;
-    margin:0 auto 16px;
-  }
-  .row{
-    display:flex;
-    margin-bottom:10px;
-    animation:rise .28s cubic-bezier(.22,.75,.3,1) both;
-  }
-  @keyframes rise{
-    from{opacity:0;transform:translate3d(0,10px,0)}
-    to{opacity:1;transform:translate3d(0,0,0)}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .row{animation:none}
-    .dot{animation:none}
-  }
-  .row.bot{justify-content:flex-start}
-  .row.user{justify-content:flex-end}
-  .bubble{
-    position:relative;
-    max-width:84%;
-    padding:10px 13px 8px;
-    font-size:14.5px;
-    line-height:1.52;
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    word-wrap:break-word;
-    overflow-wrap:anywhere;
-  }
-  .bot .bubble{
-    background:var(--bot);
-    border:1px solid var(--line);
-    border-bottom-left-radius:6px;
-    color:var(--text);
-  }
-  .user .bubble{
-    background:var(--user);
-    color:#F2F6FA;
-    border-bottom-right-radius:6px;
-  }
-  .bubble strong{font-weight:650}
-  .bubble .tt{
-    display:block;
-    font-family:var(--serif);
-    font-size:15px;
-    font-weight:600;
-    color:var(--ink);
-    margin-bottom:6px;
-    padding-bottom:6px;
-    border-bottom:1px solid var(--accent-soft);
-  }
-  .bubble ol,.bubble ul{margin:6px 0 2px;padding-left:19px}
-  .bubble li{margin-bottom:5px}
-  .bubble ol{list-style:decimal}
-  .bubble ul{list-style:none;padding-left:2px}
-  .bubble ul li{position:relative;padding-left:14px}
-  .bubble ul li::before{
-    content:"";position:absolute;left:0;top:.62em;
-    width:5px;height:5px;border-radius:50%;background:var(--accent);
-  }
-  .ej{
-    display:inline-block;
-    font-size:10.5px;
-    letter-spacing:.05em;
-    text-transform:uppercase;
-    color:#8A6534;
-    background:var(--accent-soft);
-    border-radius:4px;
-    padding:1px 6px;
-    vertical-align:1px;
-    margin-left:6px;
-    font-weight:600;
-  }
-  .card{margin:8px 0 2px;border-top:1px solid var(--accent-soft)}
-  .card .r{
-    display:flex;justify-content:space-between;gap:12px;
-    padding:6px 0;
-    border-bottom:1px solid #F1EDE6;
-    font-size:13.5px;
-  }
-  .card .r span:first-child{color:var(--muted)}
-  .card .r span:last-child{text-align:right;font-weight:600;color:var(--ink)}
-  .card .r.ok span:last-child{color:#2E7D57}
-  .course{
-    padding:9px 0;
-    border-bottom:1px solid #F1EDE6;
-  }
-  .course:last-child{border-bottom:0;padding-bottom:2px}
-  .course b{display:block;font-weight:650;color:var(--ink);margin-bottom:2px}
-  .course em{
-    font-style:normal;font-size:12.5px;color:var(--muted);
-    display:block;letter-spacing:.01em;
-  }
-  .time{
-    display:block;
-    text-align:right;
-    font-size:10.5px;
-    letter-spacing:.03em;
-    margin-top:3px;
-    color:var(--muted);
-  }
-  .user .time{color:rgba(226,236,245,.62)}
+/* ---------------- header ---------------- */
+header{
+  position:relative;z-index:5;flex:0 0 auto;
+  display:flex;align-items:center;gap:12px;
+  padding:13px 14px 13px 16px;
+  padding-top:max(13px, env(safe-area-inset-top));
+  background:linear-gradient(178deg, var(--navy-2) 0%, var(--navy) 100%);
+  color:#fff;
+  box-shadow:0 1px 0 rgba(198,155,94,.42), 0 8px 22px rgba(8,14,26,.2);
+}
+.crest{
+  flex:0 0 auto;width:38px;height:38px;
+  display:grid;place-items:center;
+  border:1px solid rgba(198,155,94,.55);
+  border-radius:10px;
+  background:linear-gradient(160deg,#22375A,#131F35);
+}
+.crest svg{width:20px;height:20px}
+.crest path{stroke:var(--bronze-l)}
+.htext{min-width:0;flex:1 1 auto}
+.htitle{
+  font-family:var(--serif);font-weight:500;
+  font-size:13.5px;line-height:1.22;letter-spacing:-.008em;
+  margin:0 0 3px;color:#FBF7F1;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+@media (min-width:420px){ .htitle{font-size:15px} }
+.hsub{
+  display:flex;align-items:center;gap:6px;margin:0;
+  font-size:9.5px;letter-spacing:.17em;text-transform:uppercase;color:#8FA4BC;
+}
+.dot{
+  width:5px;height:5px;border-radius:50%;background:#4FB889;
+  box-shadow:0 0 0 0 rgba(79,184,137,.6);
+  animation:pulse 2.8s ease-out infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(79,184,137,.5)}
+  70%{box-shadow:0 0 0 6px rgba(79,184,137,0)}
+  100%{box-shadow:0 0 0 0 rgba(79,184,137,0)}
+}
+.hinfo{
+  flex:0 0 auto;width:36px;height:36px;
+  display:grid;place-items:center;
+  background:transparent;border:1px solid rgba(255,255,255,.14);
+  border-radius:9px;color:#C3D1E1;cursor:pointer;
+  transition:border-color .18s ease,color .18s ease,background .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.hinfo:hover{border-color:rgba(198,155,94,.6);color:var(--bronze-l);background:rgba(198,155,94,.07)}
+.hinfo:focus-visible{outline:2px solid var(--bronze-l);outline-offset:2px}
+.hinfo svg{width:17px;height:17px}
 
-  /* typing */
-  .typing{display:flex;align-items:center;gap:5px;padding:14px 15px}
-  .typing i{
-    width:6px;height:6px;border-radius:50%;
-    background:#9FAEBC;display:block;
-    animation:blink 1.25s infinite ease-in-out both;
-  }
-  .typing i:nth-child(2){animation-delay:.16s}
-  .typing i:nth-child(3){animation-delay:.32s}
-  @keyframes blink{
-    0%,80%,100%{opacity:.28;transform:translateY(0)}
-    40%{opacity:1;transform:translateY(-3px)}
-  }
+/* ---------------- log ---------------- */
+.log{
+  flex:1 1 auto;min-height:0;
+  overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  padding:18px 16px 4px;
+  background:
+    radial-gradient(700px 300px at 90% 0%, rgba(198,155,94,.055), transparent 62%),
+    var(--paper);
+}
+.log::-webkit-scrollbar{width:7px}
+.log::-webkit-scrollbar-thumb{background:#DFD6C7;border-radius:8px;border:2px solid var(--paper)}
 
-  /* ---------- chips ---------- */
-  .chips{
-    flex:0 0 auto;
-    display:flex;flex-wrap:wrap;gap:8px;
-    max-height:34vh;
-    overflow-y:auto;
-    padding:4px 14px 10px;
-    background:linear-gradient(180deg, rgba(243,240,234,0) 0%, var(--canvas) 22%);
-    z-index:2;
-  }
-  .chip{
-    appearance:none;
-    font:inherit;
-    font-size:13.5px;
-    line-height:1.2;
-    min-height:38px;
-    padding:9px 14px;
-    border-radius:999px;
-    border:1px solid #D9D2C6;
-    background:#fff;
-    color:var(--ink);
-    cursor:pointer;
-    box-shadow:0 1px 2px rgba(15,28,43,.05);
-    transition:transform .12s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
-    animation:chipIn .26s cubic-bezier(.22,.75,.3,1) both;
-    -webkit-tap-highlight-color:transparent;
-  }
-  @keyframes chipIn{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}
-  .chip:hover{border-color:var(--accent);background:#FFFDFA;box-shadow:0 2px 8px rgba(169,118,63,.14)}
-  .chip:active{transform:scale(.97);background:var(--accent-soft)}
-  .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .chip.ghost{background:transparent;border-color:#DFD8CC;color:var(--muted)}
-  .chip.ghost:hover{color:var(--ink);border-color:#C9BFAF;background:rgba(255,255,255,.6)}
+.rail{
+  display:flex;align-items:center;gap:10px;
+  margin:0 0 16px;
+}
+.rail::before,.rail::after{content:"";flex:1 1 auto;height:1px;background:var(--line)}
+.rail span{
+  flex:0 0 auto;
+  font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#9AA3AE;
+}
+.note{
+  margin:0 auto 18px;max-width:30ch;
+  text-align:center;font-size:11.5px;line-height:1.6;color:var(--muted);
+}
 
-  /* ---------- composer ---------- */
-  .composer{
-    flex:0 0 auto;
-    display:flex;align-items:center;gap:9px;
-    padding:9px 12px;
-    background:#fff;
-    border-top:1px solid var(--line);
-  }
-  .composer input{
-    flex:1 1 auto;
-    min-width:0;
-    font:inherit;
-    font-size:16px; /* prevents iOS zoom on focus */
-    padding:11px 14px;
-    border-radius:999px;
-    border:1px solid #DDD6CA;
-    background:#FAF8F4;
-    color:var(--text);
-    outline:none;
-    transition:border-color .15s ease, background .15s ease;
-  }
-  .composer input::placeholder{color:#9AA6B2}
-  .composer input:focus{border-color:var(--accent);background:#fff}
-  .send{
-    flex:0 0 auto;
-    width:42px;height:42px;
-    display:grid;place-items:center;
-    border:0;border-radius:50%;
-    background:var(--ink);
-    color:#fff;
-    cursor:pointer;
-    transition:transform .12s ease, background .15s ease, opacity .15s ease;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .send:hover{background:#23405E}
-  .send:active{transform:scale(.94)}
-  .send:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .send[disabled]{opacity:.42;cursor:default;transform:none}
-  .send svg{width:19px;height:19px;display:block}
+.row{display:flex;margin-bottom:11px;animation:rise .3s cubic-bezier(.2,.75,.3,1) both}
+.row.bot{justify-content:flex-start}
+.row.user{justify-content:flex-end}
+.row.blk{display:block}
+@keyframes rise{from{opacity:0;transform:translate3d(0,12px,0)}to{opacity:1;transform:none}}
 
-  /* ---------- footer ---------- */
-  footer{
-    flex:0 0 auto;
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-    padding:8px 14px;
-    padding-bottom:max(8px, env(safe-area-inset-bottom));
-    background:var(--ink-deep);
-    color:#8FA2B6;
-    font-size:9.6px;
-    letter-spacing:.03em;
-    text-transform:uppercase;
-    line-height:1.45;
-  }
-  footer b{color:#D9C3A4;font-weight:600;letter-spacing:.05em}
-  .reset{
-    appearance:none;background:none;border:0;
-    font:inherit;font-size:9.6px;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;
-    color:#8FA2B6;cursor:pointer;padding:2px 0;
-    border-bottom:1px solid rgba(143,162,182,.4);
-    transition:color .15s ease,border-color .15s ease;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .reset:hover{color:#E7D6BE;border-color:rgba(231,214,190,.6)}
-  .reset:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bubble{
+  position:relative;max-width:85%;
+  padding:11px 14px 9px;
+  font-size:14.5px;line-height:1.58;
+  border-radius:var(--r);
+  box-shadow:var(--shadow-s);
+  overflow-wrap:anywhere;
+}
+.bot .bubble{background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px;color:var(--ink-2)}
+.user .bubble{background:var(--navy-2);color:#EDF2F8;border-bottom-right-radius:5px;border:1px solid var(--navy-2)}
+.bubble strong{font-weight:600;color:var(--ink)}
+.user .bubble strong{color:#fff}
+.time{
+  display:block;text-align:right;margin-top:4px;
+  font-size:9.5px;letter-spacing:.06em;color:#A2ABB6;font-variant-numeric:tabular-nums;
+}
+.user .time{color:rgba(214,226,240,.55)}
+.tag-ej{
+  display:inline-block;margin-left:6px;vertical-align:1px;
+  font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:#8A6534;background:var(--bronze-soft);
+  border-radius:3px;padding:2px 6px;white-space:nowrap;
+}
 
-  .log::-webkit-scrollbar{width:8px}
-  .log::-webkit-scrollbar-thumb{background:#DED8CD;border-radius:8px;border:2px solid var(--canvas)}
-  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* typing */
+.typing{display:flex;align-items:center;gap:5px;padding:15px 16px;min-height:44px}
+.typing i{width:6px;height:6px;border-radius:50%;background:#A9B4C0;display:block;animation:blink 1.3s infinite ease-in-out both}
+.typing i:nth-child(2){animation-delay:.17s}
+.typing i:nth-child(3){animation-delay:.34s}
+@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+
+/* ---------------- blocks (rich panels) ---------------- */
+.panel{
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  box-shadow:var(--shadow-m);
+  overflow:hidden;
+  margin-bottom:11px;
+}
+.p-head{
+  padding:15px 17px 13px;
+  border-bottom:1px solid var(--line-2);
+  background:linear-gradient(180deg,#FFFFFF,#FDFAF5);
+}
+.p-eyebrow{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:0 0 7px;
+  font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);
+  font-weight:600;
+}
+.p-eyebrow > span:first-child{min-width:0}
+.p-eyebrow .tag-ej{flex:0 0 auto}
+.p-title{
+  font-family:var(--serif);font-weight:600;
+  font-size:18px;line-height:1.24;letter-spacing:-.01em;
+  margin:0;color:var(--navy);
+}
+.p-meta{margin:7px 0 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.p-body{padding:6px 17px 15px}
+.p-foot{
+  padding:11px 17px 13px;border-top:1px solid var(--line-2);
+  background:#FBF7F0;
+  font-size:10.5px;line-height:1.55;color:#8B8375;
+}
+
+.rv{animation:rvIn .34s cubic-bezier(.2,.75,.3,1) both}
+@keyframes rvIn{from{opacity:0;transform:translate3d(0,9px,0)}to{opacity:1;transform:none}}
+
+/* fee breakdown lines */
+.fase{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:11px 0;border-bottom:1px solid var(--line-2);
+}
+.fase:last-of-type{border-bottom:0}
+.fase-t{flex:1 1 auto;min-width:0}
+.fase-t b{display:block;font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.fase-t em{display:block;font-style:normal;font-size:11.5px;line-height:1.45;color:var(--muted)}
+.fase-n{flex:0 0 auto;text-align:right}
+.fase-n b{
+  display:block;font-size:14px;font-weight:600;color:var(--navy);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.fase-n em{
+  display:block;font-style:normal;margin-top:2px;
+  font-size:10px;letter-spacing:.08em;color:var(--bronze);font-variant-numeric:tabular-nums;
+}
+.tot{
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:8px 0;font-size:13px;color:var(--muted);
+}
+.tot b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tot.grand{
+  margin-top:6px;padding:13px 0 2px;border-top:1px solid var(--bronze-soft);
+  font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--bronze);font-weight:600;
+}
+.tot.grand b{
+  font-family:var(--serif);font-size:22px;letter-spacing:-.01em;
+  text-transform:none;color:var(--navy);font-weight:600;
+}
+
+/* key/value rows */
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.kv:last-child{border-bottom:0}
+.kv > span:first-child{color:var(--muted);flex:0 0 auto}
+.kv > span:last-child{text-align:right;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.kv.ok > span:last-child{color:var(--ok)}
+
+/* status badge */
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  padding:5px 10px;border-radius:999px;
+}
+.badge.ok{color:var(--ok);background:rgba(44,122,86,.09);border:1px solid rgba(44,122,86,.22)}
+.badge i{width:5px;height:5px;border-radius:50%;background:currentColor;display:block}
+
+/* stepper */
+.prog{display:flex;align-items:center;gap:10px;margin:2px 0 12px}
+.prog-bar{flex:1 1 auto;height:3px;border-radius:3px;background:var(--line);overflow:hidden}
+.prog-bar i{display:block;height:100%;width:0;background:var(--bronze);border-radius:3px;transition:width .3s cubic-bezier(.2,.75,.3,1)}
+.prog-n{
+  flex:0 0 auto;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);font-variant-numeric:tabular-nums;
+}
+.step{
+  display:flex;align-items:flex-start;gap:11px;width:100%;
+  padding:10px 0;border:0;border-bottom:1px solid var(--line-2);
+  background:none;font:inherit;text-align:left;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.step:last-of-type{border-bottom:0}
+.step:focus-visible{outline:2px solid var(--bronze);outline-offset:2px;border-radius:6px}
+.step-m{
+  flex:0 0 auto;width:22px;height:22px;margin-top:1px;
+  display:grid;place-items:center;border-radius:50%;
+  border:1px solid var(--line);background:#fff;
+  font-size:10.5px;font-weight:600;color:var(--muted);
+  font-variant-numeric:tabular-nums;
+  transition:background .2s ease,border-color .2s ease,color .2s ease;
+}
+.step-m svg{width:11px;height:11px;opacity:0;transform:scale(.6);transition:opacity .2s ease,transform .2s ease}
+.step-t{flex:1 1 auto;min-width:0;font-size:13.5px;line-height:1.5;color:var(--ink-2);transition:color .2s ease}
+.step-t b{font-weight:500;display:block}
+.step-t em{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:2px}
+.step[aria-pressed="true"] .step-m{background:var(--bronze);border-color:var(--bronze);color:#fff;font-size:0}
+.step[aria-pressed="true"] .step-m svg{opacity:1;transform:none}
+.step[aria-pressed="true"] .step-t{color:var(--muted)}
+.step[aria-pressed="true"] .step-t b{text-decoration:line-through;text-decoration-color:#C9BFAF}
+
+/* agenda cards */
+.ev{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line-2)}
+.ev:last-of-type{border-bottom:0}
+.ev-d{
+  flex:0 0 auto;width:48px;align-self:flex-start;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 0 9px;border-radius:9px;
+  background:linear-gradient(170deg,#1C2C48,#111C31);
+  color:#fff;
+}
+.ev-d b{font-family:var(--serif);font-size:19px;line-height:1;font-weight:600;font-variant-numeric:tabular-nums}
+.ev-d span{margin-top:3px;font-size:8.5px;letter-spacing:.16em;color:var(--bronze-l)}
+.ev-t{flex:1 1 auto;min-width:0}
+.ev-t b{display:block;font-size:13.5px;font-weight:600;line-height:1.38;color:var(--ink);margin-bottom:4px}
+.ev-t em{display:block;font-style:normal;font-size:11.5px;color:var(--muted);line-height:1.5}
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.pill{
+  font-size:9px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;
+  padding:3px 7px;border-radius:3px;color:var(--bronze);background:var(--bronze-soft);
+}
+.act{
+  appearance:none;font:inherit;
+  display:inline-flex;align-items:center;gap:7px;
+  margin-top:9px;padding:8px 13px;
+  font-size:12px;font-weight:600;letter-spacing:.02em;
+  color:var(--navy);background:#fff;
+  border:1px solid var(--line);border-radius:8px;cursor:pointer;
+  box-shadow:var(--shadow-s);
+  transition:border-color .18s ease,background .18s ease,transform .12s ease,box-shadow .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.act:hover{border-color:var(--bronze);background:#FFFCF6;box-shadow:0 2px 10px rgba(168,118,62,.14)}
+.act:active{transform:scale(.98)}
+.act:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
+.act svg{width:13px;height:13px;flex:0 0 auto}
+.act.solid{background:var(--navy);color:#fff;border-color:var(--navy)}
+.act.solid:hover{background:var(--navy-2);border-color:var(--bronze)}
+
+/* ---------------- document preview ---------------- */
+.doc{
+  position:relative;overflow:hidden;
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  border-radius:6px;
+  box-shadow:0 1px 2px rgba(16,25,46,.06), 0 14px 34px rgba(16,25,46,.1);
+  margin-bottom:11px;
+}
+.doc::after{
+  content:"EJEMPLO";
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(38px,11.5vw,58px);letter-spacing:.16em;
+  color:rgba(168,118,62,.075);
+  transform:rotate(-24deg);
+  pointer-events:none;user-select:none;
+}
+.doc-in{position:relative;z-index:1;padding:22px 20px 20px}
+.doc-lh{
+  display:flex;align-items:center;gap:11px;
+  padding-bottom:13px;border-bottom:2px solid var(--navy);
+}
+.doc-lh svg{width:28px;height:28px;flex:0 0 auto}
+.doc-lh path{stroke:var(--navy)}
+.doc-lh div{min-width:0}
+.doc-lh b{
+  display:block;font-family:var(--serif);font-weight:600;
+  font-size:12.5px;line-height:1.25;color:var(--navy);letter-spacing:-.005em;
+}
+.doc-lh span{
+  display:block;margin-top:3px;
+  font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--bronze);
+}
+.doc-h{
+  margin:18px 0 0;
+  font-family:var(--serif);font-weight:600;
+  font-size:17px;line-height:1.26;letter-spacing:-.01em;color:var(--navy);
+}
+.doc-folio{
+  margin:7px 0 16px;
+  font-size:10px;letter-spacing:.09em;color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.doc-p{margin:0 0 14px;font-size:12.5px;line-height:1.68;color:var(--ink-2)}
+.doc-tbl{width:100%;border-collapse:collapse;margin:0 0 14px}
+.doc-tbl th{
+  text-align:left;padding:0 0 6px;
+  font-size:8.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--bronze);
+  border-bottom:1px solid var(--line);font-weight:600;
+}
+.doc-tbl th:last-child,.doc-tbl td:last-child{text-align:right}
+.doc-tbl td{
+  padding:8px 0;font-size:12.5px;color:var(--ink-2);
+  border-bottom:1px solid var(--line-2);font-variant-numeric:tabular-nums;
+}
+.doc-tbl td + td,.doc-tbl th + th{padding-left:10px}
+.doc-tbl th:nth-child(2),.doc-tbl td:nth-child(2){width:16%;white-space:nowrap}
+.doc-tbl th:last-child,.doc-tbl td:last-child{white-space:nowrap}
+.doc-tbl tr:last-child td{border-bottom:0}
+.doc-tbl tr.sum td{
+  padding-top:11px;border-top:1px solid var(--navy);border-bottom:0;
+  font-family:var(--serif);font-size:15px;font-weight:600;color:var(--navy);
+}
+.doc-sig{
+  margin-top:22px;padding-top:11px;
+  border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
+}
+.doc-sig div:first-child{min-width:0}
+.doc-sig b{
+  display:block;font-family:var(--serif);font-size:11.5px;color:var(--navy);font-weight:600;
+}
+.doc-sig span{display:block;margin-top:3px;font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.seal{
+  flex:0 0 auto;width:52px;height:52px;border-radius:50%;
+  border:1px solid var(--bronze);
+  display:grid;place-items:center;text-align:center;
+  font-size:7px;letter-spacing:.11em;text-transform:uppercase;color:var(--bronze);
+  line-height:1.35;padding:6px;
+  background:radial-gradient(circle, rgba(168,118,62,.06), transparent 70%);
+}
+
+/* ---------------- chips ---------------- */
+.chips{
+  position:relative;z-index:2;flex:0 0 auto;
+  display:flex;flex-wrap:wrap;gap:7px;
+  max-height:30vh;overflow-y:auto;
+  padding:6px 16px 11px;
+  background:linear-gradient(180deg, rgba(247,243,236,0) 0%, var(--paper) 26%);
+}
+.chips::-webkit-scrollbar{width:0;height:0}
+.chip{
+  appearance:none;font:inherit;
+  font-size:13px;font-weight:500;line-height:1.2;
+  min-height:37px;padding:9px 14px;
+  border-radius:999px;border:1px solid #DFD6C7;
+  background:#fff;color:var(--navy);cursor:pointer;
+  box-shadow:var(--shadow-s);
+  transition:transform .12s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+  animation:chipIn .28s cubic-bezier(.2,.75,.3,1) both;
+  -webkit-tap-highlight-color:transparent;
+}
+@keyframes chipIn{from{opacity:0;transform:translate3d(0,7px,0)}to{opacity:1;transform:none}}
+.chip:hover{border-color:var(--bronze);background:#FFFCF6;box-shadow:0 2px 9px rgba(168,118,62,.14)}
+.chip:active{transform:scale(.97)}
+.chip:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
+.chip.ghost{background:transparent;border-color:#E0D8CB;color:var(--muted);font-weight:400}
+.chip.ghost:hover{color:var(--navy);border-color:#CFC3B0;background:rgba(255,255,255,.7)}
+
+/* ---------------- composer ---------------- */
+.composer{
+  position:relative;z-index:2;flex:0 0 auto;
+  display:flex;align-items:center;gap:9px;
+  padding:9px 12px;background:#fff;border-top:1px solid var(--line);
+}
+.composer input{
+  flex:1 1 auto;min-width:0;font:inherit;font-size:16px;
+  padding:11px 15px;border-radius:999px;
+  border:1px solid #E0D8CB;background:#FAF7F2;color:var(--ink);outline:none;
+  transition:border-color .18s ease,background .18s ease;
+}
+.composer input::placeholder{color:#A2ABB6}
+.composer input:focus{border-color:var(--bronze);background:#fff}
+.send{
+  flex:0 0 auto;width:42px;height:42px;
+  display:grid;place-items:center;border:0;border-radius:50%;
+  background:var(--navy);color:#fff;cursor:pointer;
+  transition:transform .12s ease,background .18s ease,opacity .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.send:hover{background:var(--navy-2)}
+.send:active{transform:scale(.94)}
+.send:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
+.send[disabled]{opacity:.4;cursor:default;transform:none}
+.send svg{width:18px;height:18px;display:block}
+
+/* ---------------- footer ---------------- */
+footer{
+  position:relative;z-index:2;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:8px 15px;padding-bottom:max(8px, env(safe-area-inset-bottom));
+  background:var(--navy-3);color:#8195AC;
+  font-size:9px;letter-spacing:.09em;text-transform:uppercase;line-height:1.5;
+}
+footer b{color:var(--bronze-l);font-weight:600;letter-spacing:.11em}
+footer .nw{white-space:nowrap}
+.reset{
+  appearance:none;background:none;border:0;font:inherit;
+  font-size:9px;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;
+  color:#8195AC;cursor:pointer;padding:2px 0;
+  border-bottom:1px solid rgba(129,149,172,.4);
+  transition:color .18s ease,border-color .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.reset:hover{color:var(--bronze-l);border-color:rgba(198,155,94,.6)}
+.reset:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
+
+/* ---------------- drawer ---------------- */
+.scrim{
+  position:absolute;inset:0;z-index:40;
+  background:rgba(8,14,26,.5);
+  opacity:0;visibility:hidden;
+  transition:opacity .28s ease,visibility .28s;
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
+}
+.scrim.open{opacity:1;visibility:visible}
+.drawer{
+  position:absolute;top:0;right:0;bottom:0;z-index:41;
+  width:min(400px,92%);
+  display:flex;flex-direction:column;
+  background:var(--paper);
+  box-shadow:-20px 0 50px rgba(6,12,24,.35);
+  transform:translate3d(102%,0,0);
+  transition:transform .32s cubic-bezier(.25,.8,.3,1);
+  visibility:hidden;
+}
+.drawer.open{transform:none;visibility:visible}
+.dr-head{
+  flex:0 0 auto;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:20px 18px 16px;
+  padding-top:max(20px, env(safe-area-inset-top));
+  background:linear-gradient(178deg,var(--navy-2),var(--navy));color:#fff;
+  box-shadow:0 1px 0 rgba(198,155,94,.42);
+}
+.dr-head p{margin:0}
+.dr-eyebrow{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--bronze-l)}
+.dr-title{font-family:var(--serif);font-weight:500;font-size:20px;line-height:1.2;margin-top:7px !important;color:#FBF7F1}
+.dr-close{
+  flex:0 0 auto;width:34px;height:34px;display:grid;place-items:center;
+  background:transparent;border:1px solid rgba(255,255,255,.16);border-radius:9px;
+  color:#C3D1E1;cursor:pointer;transition:border-color .18s ease,color .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.dr-close:hover{border-color:var(--bronze-l);color:var(--bronze-l)}
+.dr-close:focus-visible{outline:2px solid var(--bronze-l);outline-offset:2px}
+.dr-close svg{width:15px;height:15px}
+.dr-body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:20px 18px 26px}
+.dr-body::-webkit-scrollbar{width:7px}
+.dr-body::-webkit-scrollbar-thumb{background:#DFD6C7;border-radius:8px;border:2px solid var(--paper)}
+.dr-lead{margin:0 0 22px;font-size:14px;line-height:1.68;color:var(--ink-2)}
+.dr-lead strong{color:var(--navy);font-weight:600}
+.dr-sec{
+  margin:0 0 12px;
+  font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--bronze);font-weight:600;
+}
+.mod{
+  display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);
+}
+.mod:last-of-type{border-bottom:0}
+.mod-i{
+  flex:0 0 auto;width:32px;height:32px;
+  display:grid;place-items:center;border-radius:8px;
+  border:1px solid var(--line);background:#fff;color:var(--bronze);
+}
+.mod-i svg{width:15px;height:15px}
+.mod-t{flex:1 1 auto;min-width:0}
+.mod-t b{display:block;font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.mod-t em{display:block;font-style:normal;font-size:12px;line-height:1.52;color:var(--muted)}
+.dr-sign{
+  margin-top:26px;padding-top:18px;border-top:1px solid var(--line);
+  text-align:center;
+}
+.dr-sign b{
+  display:block;font-family:var(--serif);font-size:15px;font-weight:600;color:var(--navy);letter-spacing:.01em;
+}
+.dr-sign span{
+  display:block;margin-top:6px;
+  font-size:9.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--muted);
+}
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none !important}
+.doc-tbl td:first-child{overflow-wrap:anywhere}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important;
+  }
+}
 </style>
 </head>
 <body>
 
-<main class="app" role="application" aria-label="Asistente virtual del Colegio de Arquitectos de Costa Rica">
+<main class="app" id="app">
+
+  <!-- opening title card -->
+  <div class="overture" id="overture" role="button" tabindex="0" aria-label="Omitir presentación">
+    <svg class="ov-mark" viewBox="0 0 40 40" fill="none" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 5 L35 34 H5 Z"/><path d="M20 5 V34"/><path d="M12.5 19.5 H27.5"/>
+    </svg>
+    <p class="ov-eyebrow">Costa Rica</p>
+    <div class="ov-rule" aria-hidden="true"></div>
+    <h1 class="ov-title"><span>Colegio de</span><span>Arquitectos de</span><span>Costa Rica</span></h1>
+    <p class="ov-sub">Ventanilla digital · Demostración</p>
+    <p class="ov-skip">Toque para continuar</p>
+  </div>
 
   <header>
-    <div class="mono" aria-hidden="true">CA</div>
+    <div class="crest" aria-hidden="true">
+      <svg viewBox="0 0 40 40" fill="none" stroke-width="1.6" stroke-linejoin="round">
+        <path d="M20 5 L35 34 H5 Z"/><path d="M20 5 V34"/>
+      </svg>
+    </div>
     <div class="htext">
       <p class="htitle">Colegio de Arquitectos de Costa&nbsp;Rica</p>
-      <p class="hsub"><span class="dot" aria-hidden="true"></span>Asistente virtual · Demostración</p>
+      <p class="hsub"><span class="dot" aria-hidden="true"></span>Ventanilla digital · Demostración</p>
     </div>
+    <button class="hinfo" id="infoBtn" type="button" aria-label="Sobre esta demostración" aria-expanded="false" aria-controls="drawer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.6"/>
+      </svg>
+    </button>
   </header>
 
-  <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions">
-    <div class="divider"><span>Hoy</span></div>
-    <p class="note">Demostración interactiva. Toda la información mostrada es de ejemplo y no proviene de sistemas del Colegio.</p>
-  </div>
+  <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions"></div>
 
   <div class="chips" id="chips" role="group" aria-label="Opciones sugeridas"></div>
 
   <form class="composer" id="form" autocomplete="off">
     <label class="sr" for="input">Escriba su consulta</label>
-    <input id="input" type="text" placeholder="Escriba su consulta…" maxlength="140" enterkeyhint="send">
+    <input id="input" type="text" placeholder="Escriba su consulta…" maxlength="160" enterkeyhint="send">
     <button class="send" id="send" type="submit" aria-label="Enviar mensaje">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M4 12 20 4l-4 8 4 8z"></path>
+        <path d="M4 12 20 4l-4 8 4 8z"/>
       </svg>
     </button>
   </form>
 
   <footer>
-    <span>Demostración desarrollada por <b>Mana&nbsp;Solutions</b> · datos de&nbsp;ejemplo</span>
+    <span>Demostración desarrollada por <b>Mana&nbsp;Solutions</b> <span class="nw">· datos de ejemplo</span></span>
     <button class="reset" id="reset" type="button">Reiniciar</button>
   </footer>
+
+  <!-- info drawer -->
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle" hidden>
+    <div class="dr-head">
+      <div>
+        <p class="dr-eyebrow">Nota de la demostración</p>
+        <p class="dr-title" id="drTitle">Sobre esta demostración</p>
+      </div>
+      <button class="dr-close" id="drClose" type="button" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="dr-body">
+      <p class="dr-lead">
+        Un colegio profesional atiende de ocho a cuatro. Sus colegiados trabajan a otras horas.
+        Esta ventanilla existe para cerrar esa distancia: <strong>el Colegio disponible las veinticuatro
+        horas</strong>, resolviendo en segundos lo que hoy consume una llamada, una fila o tres correos.
+        Lo que ve aquí funciona con datos de ejemplo; una versión en producción se conecta a los
+        sistemas del Colegio.
+      </p>
+
+      <p class="dr-sec">Módulos de una versión en producción</p>
+
+      <div class="mod">
+        <div class="mod-i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div>
+        <div class="mod-t"><b>Trámites</b><em>Requisitos, estado de gestiones y guías paso a paso, con seguimiento por expediente.</em></div>
+      </div>
+      <div class="mod">
+        <div class="mod-i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+        <div class="mod-t"><b>Agenda</b><em>Cursos, charlas y actividades, con reserva de cupo y recordatorios automáticos.</em></div>
+      </div>
+      <div class="mod">
+        <div class="mod-i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.4 8.3-8 9-4.6-.7-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div class="mod-t"><b>Colegiatura</b><em>Estado de la persona colegiada, vigencia y constancias digitales al instante.</em></div>
+      </div>
+      <div class="mod">
+        <div class="mod-i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div>
+        <div class="mod-t"><b>Honorarios</b><em>Calculadora de referencia sobre la tabla vigente, con desglose por fase y constancia.</em></div>
+      </div>
+      <div class="mod">
+        <div class="mod-i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M2.5 10h19M6.5 14.5h3"/></svg></div>
+        <div class="mod-t"><b>Pagos</b><em>Cuotas y matrículas en línea, con comprobante enviado al correo registrado.</em></div>
+      </div>
+
+      <div class="dr-sign">
+        <b>Desarrollado por Mana Solutions</b>
+        <span>Datos de ejemplo · Sin conexión a sistemas reales</span>
+      </div>
+    </div>
+  </aside>
 
 </main>
 
 <script>
 (function(){
-  "use strict";
+"use strict";
 
-  var log   = document.getElementById('log'),
-      chips = document.getElementById('chips'),
-      form  = document.getElementById('form'),
-      input = document.getElementById('input'),
-      send  = document.getElementById('send'),
-      reset = document.getElementById('reset');
+/* ============================================================
+   0. Referencias y utilidades
+   ============================================================ */
 
-  var busy = false;
-  var pending = null;          // key of the field the assistant is waiting for
-  var data = {};               // captured demo data
+var log      = document.getElementById('log'),
+    chipsEl  = document.getElementById('chips'),
+    form     = document.getElementById('form'),
+    input    = document.getElementById('input'),
+    sendBtn  = document.getElementById('send'),
+    resetBtn = document.getElementById('reset'),
+    overture = document.getElementById('overture'),
+    infoBtn  = document.getElementById('infoBtn'),
+    drawer   = document.getElementById('drawer'),
+    scrim    = document.getElementById('scrim'),
+    drClose  = document.getElementById('drClose');
 
-  /* ---------- helpers ---------- */
+var RM = false;
+try { RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){}
 
-  function esc(s){
-    return String(s).replace(/[&<>"']/g, function(c){
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-    });
-  }
+var busy = false, pending = null, S = {};
 
-  function hora(){
-    var d = new Date(), h = d.getHours(), m = d.getMinutes();
-    var ampm = h < 12 ? 'a. m.' : 'p. m.';
-    var h12 = h % 12; if (h12 === 0) h12 = 12;
-    return h12 + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
-  }
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
 
-  function saludo(){
-    var h = new Date().getHours();
-    if (h < 12) return 'Buenos días';
-    if (h < 19) return 'Buenas tardes';
-    return 'Buenas noches';
-  }
+/* formato de moneda de Costa Rica: punto como separador de miles */
+function crc(n){
+  n = Math.round(n);
+  var neg = n < 0; n = Math.abs(n);
+  return (neg?'-':'') + '₡' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
+function num(n){
+  return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
+function pct(n){
+  var s = n.toFixed(2);
+  if (s.charAt(s.length-1) === '0') s = s.slice(0,-1);
+  if (s.charAt(s.length-1) === '.') s = s.slice(0,-1);
+  return s.replace('.', ',') + ' %';
+}
 
-  function scrollDown(smooth){
-    log.scrollTo({ top: log.scrollHeight, behavior: smooth === false ? 'auto' : 'smooth' });
-  }
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','setiembre','octubre','noviembre','diciembre'];
 
-  function bubble(who, html){
-    var row = document.createElement('div');
-    row.className = 'row ' + who;
-    var b = document.createElement('div');
-    b.className = 'bubble';
-    b.innerHTML = html + '<span class="time">' + hora() + '</span>';
-    row.appendChild(b);
-    log.appendChild(row);
-    scrollDown();
-    return row;
-  }
+function hora(){
+  var d = new Date(), h = d.getHours(), m = d.getMinutes();
+  var ampm = h < 12 ? 'a. m.' : 'p. m.';
+  var h12 = h % 12; if (h12 === 0) h12 = 12;
+  return h12 + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
+}
+function fechaLarga(){
+  var d = new Date();
+  return d.getDate() + ' de ' + MESES[d.getMonth()] + ' de ' + d.getFullYear();
+}
+function saludo(){
+  var h = new Date().getHours();
+  if (h < 12) return 'Buenos días';
+  if (h < 19) return 'Buenas tardes';
+  return 'Buenas noches';
+}
 
-  function typing(){
-    var row = document.createElement('div');
-    row.className = 'row bot';
-    row.innerHTML = '<div class="bubble typing" aria-label="Escribiendo"><i></i><i></i><i></i></div>';
-    log.appendChild(row);
-    scrollDown();
-    return row;
-  }
+/* ============================================================
+   1. Tabla de tarifas de ejemplo (NO oficial)
+   ============================================================ */
 
-  function setBusy(v){
-    busy = v;
-    send.disabled = v;
-  }
+var TIPOS = {
+  vivienda:      { label:'Vivienda unifamiliar',      m2:620000, factor:1.00 },
+  comercial:     { label:'Local comercial u oficina', m2:780000, factor:1.10 },
+  institucional: { label:'Obra institucional',        m2:850000, factor:1.15 },
+  remodelacion:  { label:'Remodelación o ampliación', m2:420000, factor:1.25 }
+};
 
-  function clearChips(){
-    chips.innerHTML = '';
-  }
+var FASES = [
+  { n:'Anteproyecto',                   p:1.0, d:'Estudio preliminar, propuesta volumétrica y ajuste con la persona propietaria.' },
+  { n:'Planos constructivos',           p:4.0, d:'Juego completo de planos para trámite y construcción.' },
+  { n:'Especificaciones y presupuesto', p:0.5, d:'Especificaciones técnicas y estimación presupuestaria de la obra.' },
+  { n:'Dirección técnica',              p:3.0, d:'Inspección y dirección profesional durante la ejecución.' }
+];
 
-  function showChips(list){
-    clearChips();
-    if (!list) return;
-    list.forEach(function(c, i){
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'chip' + (c[2] === 'ghost' ? ' ghost' : '');
-      b.textContent = c[0];
-      b.style.animationDelay = (i * 45) + 'ms';
-      b.addEventListener('click', function(){
-        if (busy) return;
-        pending = null;
-        bubble('user', esc(c[0]));
-        clearChips();
-        go(c[1]);
-      });
-      chips.appendChild(b);
-    });
-    scrollDown();
-  }
+var PCT_BASE = 8.5;   /* suma de las fases */
+var IVA = 0.13;
 
-  /* Plays an assistant turn: typing indicator, then each message. */
-  function say(msgs, after){
-    setBusy(true);
-    var i = 0;
-    (function step(){
-      if (i >= msgs.length){ setBusy(false); if (after) after(); return; }
-      var t = typing();
-      var delay = i === 0 ? 800 : 520;
-      setTimeout(function(){
-        t.remove();
-        bubble('bot', msgs[i]);
-        i++;
-        setTimeout(step, 260);
-      }, delay);
-    })();
-  }
-
-  /* ---------- copy ---------- */
-
-  var MENU = [
-    ['Trámites y requisitos', 'tramites'],
-    ['Cursos y actualización profesional', 'cursos'],
-    ['Estado de colegiatura', 'colegiatura'],
-    ['Contacto y horarios', 'contacto']
-  ];
-
-  var MAS = '¿Le ayudo con algo más?';
-
-  var CIERRE = [
-    ['Otro trámite', 'tramites'],
-    ['Cursos', 'cursos'],
-    ['Hablar con un funcionario', 'funcionario'],
-    ['Volver al inicio', 'menu', 'ghost']
-  ];
-
-  var CIERRE_ALT = [
-    ['Trámites y requisitos', 'tramites'],
-    ['Cursos', 'cursos'],
-    ['Estado de colegiatura', 'colegiatura'],
-    ['Volver al inicio', 'menu', 'ghost']
-  ];
-
-  var CURSOS = [
-    {
-      id: 'bio',
-      nombre: 'Diseño bioclimático aplicado al trópico húmedo',
-      meta: '18 y 19 de setiembre · virtual en vivo · 12 horas'
-    },
-    {
-      id: 'sismico',
-      nombre: 'Actualización del Código Sísmico y su aplicación en obra',
-      meta: '3 de octubre · presencial · 8 horas'
-    },
-    {
-      id: 'proyectos',
-      nombre: 'Gestión de proyectos y control de costos',
-      meta: '24 y 25 de octubre · modalidad híbrida · 16 horas'
-    }
-  ];
-
-  var NODES = {
-
-    /* ---- inicio ---- */
-    inicio: {
-      msgs: function(){
-        return [
-          saludo() + '. Le saluda el asistente virtual del Colegio de Arquitectos de Costa Rica.',
-          'Atiendo consultas de las personas colegiadas las 24 horas, todos los días. ¿En qué le puedo ayudar?'
-        ];
-      },
-      chips: MENU
-    },
-
-    menu: {
-      msgs: ['Con gusto. ¿Sobre cuál tema desea consultar?'],
-      chips: MENU
-    },
-
-    /* ---- trámites ---- */
-    tramites: {
-      msgs: ['Estos son los trámites que le puedo explicar paso a paso:'],
-      chips: [
-        ['Incorporación al Colegio', 'incorporacion'],
-        ['Renovación anual', 'renovacion'],
-        ['Certificación de colegiado', 'certificacion'],
-        ['Volver al inicio', 'menu', 'ghost']
-      ]
-    },
-
-    incorporacion: {
-      msgs: [
-        '<span class="tt">Incorporación al Colegio</span>' +
-        'Requisitos<span class="ej">ejemplo</span>' +
-        '<ol>' +
-        '<li>Título universitario en Arquitectura, debidamente inscrito.</li>' +
-        '<li>Copia de la cédula de identidad por ambos lados.</li>' +
-        '<li>Fotografía reciente, tamaño pasaporte.</li>' +
-        '<li>Formulario de solicitud firmado.</li>' +
-        '<li>Comprobante del pago de incorporación.</li>' +
-        '</ol>',
-        'La solicitud se presenta en línea. La resolución toma entre 10 y 15 días hábiles y se le notifica al correo registrado. Luego se le convoca al acto de juramentación.',
-        MAS
-      ],
-      chips: CIERRE
-    },
-
-    renovacion: {
-      msgs: [
-        '<span class="tt">Renovación anual de la colegiatura</span>' +
-        '<ol>' +
-        '<li>Ingrese al portal de la persona colegiada con su número y contraseña.</li>' +
-        '<li>Verifique que su correo y teléfono estén actualizados.</li>' +
-        '<li>Cancele la cuota anual vigente por transferencia, tarjeta o en ventanilla.</li>' +
-        '<li>Descargue el comprobante que queda en su expediente.</li>' +
-        '</ol>',
-        'La renovación se refleja en el sistema en un máximo de 24 horas. Si su cuota tiene atraso, le puedo indicar cómo ponerse al día.',
-        MAS
-      ],
-      chips: CIERRE
-    },
-
-    certificacion: {
-      msgs: [
-        '<span class="tt">Certificación de condición de colegiado</span>' +
-        'Se emite en formato digital con firma electrónica.<span class="ej">ejemplo</span>' +
-        '<ul>' +
-        '<li>Indique su número de colegiado y el uso que le dará.</li>' +
-        '<li>Debe encontrarse al día con la cuota.</li>' +
-        '<li>Emisión estimada: 1 día hábil.</li>' +
-        '<li>Se envía al correo registrado en su expediente.</li>' +
-        '</ul>',
-        MAS
-      ],
-      chips: CIERRE
-    },
-
-    /* ---- cursos ---- */
-    cursos: {
-      msgs: [
-        'Estos son los próximos cursos de actualización profesional<span class="ej">fechas de ejemplo</span>' +
-        '<div class="card" style="border-top:0">' +
-          CURSOS.map(function(c){
-            return '<div class="course"><b>' + c.nombre + '</b><em>' + c.meta + '</em></div>';
-          }).join('') +
-        '</div>',
-        'Puedo reservarle un cupo en este momento y enviarle la confirmación por correo.'
-      ],
-      chips: [
-        ['Reservar un cupo', 'reserva'],
-        ['Contacto y horarios', 'contacto'],
-        ['Volver al inicio', 'menu', 'ghost']
-      ]
-    },
-
-    reserva: {
-      msgs: ['Con gusto. ¿En cuál curso desea reservar?'],
-      chips: [
-        ['Diseño bioclimático', 'reserva_bio'],
-        ['Código Sísmico', 'reserva_sismico'],
-        ['Gestión de proyectos', 'reserva_proyectos'],
-        ['Mejor después', 'menu', 'ghost']
-      ]
-    },
-
-    reserva_nombre: {
-      msgs: function(){
-        return [
-          'Excelente elección: <strong>' + data.curso.nombre + '</strong>.',
-          '¿Me indica su nombre completo, tal como aparece en su registro?'
-        ];
-      },
-      ask: 'nombre'
-    },
-
-    reserva_correo: {
-      msgs: function(){
-        return ['Gracias, ' + esc(data.nombre) + '. ¿A cuál correo electrónico le envío la confirmación?'];
-      },
-      ask: 'correo'
-    },
-
-    reserva_ok: {
-      msgs: function(){
-        return [
-          'Un momento, registro su cupo.',
-          '<span class="tt">Reserva confirmada</span>' +
-          '<div class="card">' +
-            '<div class="r"><span>Curso</span><span>' + data.curso.corto + '</span></div>' +
-            '<div class="r"><span>Fecha</span><span>' + data.curso.fecha + '</span></div>' +
-            '<div class="r"><span>A nombre de</span><span>' + esc(data.nombre) + '</span></div>' +
-            '<div class="r"><span>Correo</span><span>' + esc(data.correo) + '</span></div>' +
-            '<div class="r ok"><span>Estado</span><span>Cupo reservado</span></div>' +
-          '</div>' +
-          '<span class="ej">datos de ejemplo</span>',
-          'En el sistema real recibiría el comprobante y el enlace de pago en su correo, con recordatorio 48 horas antes del curso.',
-          MAS
-        ];
-      },
-      chips: CIERRE_ALT
-    },
-
-    /* ---- colegiatura ---- */
-    colegiatura: {
-      msgs: [
-        'Con gusto reviso el estado de su colegiatura.',
-        '¿Me indica su número de colegiado? Puede escribirlo en el campo de abajo.'
-      ],
-      ask: 'colegiado'
-    },
-
-    colegiatura_ok: {
-      msgs: function(){
-        return [
-          'Consulto el registro, un momento.',
-          '<span class="tt">Estado de colegiatura</span>' +
-          '<div class="card">' +
-            '<div class="r"><span>Número</span><span>' + esc(data.colegiado) + '</span></div>' +
-            '<div class="r ok"><span>Condición</span><span>Al día</span></div>' +
-            '<div class="r"><span>Vigencia</span><span>31 de diciembre de 2026</span></div>' +
-            '<div class="r"><span>Última cuota</span><span>Julio 2026</span></div>' +
-          '</div>' +
-          '<span class="ej">datos de ejemplo</span>',
-          'Estando al día puede solicitar certificaciones y matricular cursos con la tarifa preferencial.',
-          MAS
-        ];
-      },
-      chips: [
-        ['Ver comprobante de pago', 'comprobante'],
-        ['Certificación de colegiado', 'certificacion'],
-        ['Cursos', 'cursos'],
-        ['Volver al inicio', 'menu', 'ghost']
-      ]
-    },
-
-    comprobante: {
-      msgs: function(){
-        return [
-          '<span class="tt">Comprobante de cuota</span>' +
-          '<div class="card" style="border-top:0">' +
-            '<div class="r"><span>Recibo</span><span>N.° 000-00000</span></div>' +
-            '<div class="r"><span>Concepto</span><span>Cuota de colegiatura</span></div>' +
-            '<div class="r"><span>Periodo</span><span>Julio 2026</span></div>' +
-            '<div class="r"><span>Colegiado</span><span>' + esc(data.colegiado || '—') + '</span></div>' +
-            '<div class="r ok"><span>Estado</span><span>Cancelado</span></div>' +
-          '</div>' +
-          '<span class="ej">documento de ejemplo</span>',
-          'En el sistema real este comprobante se envía en PDF al correo registrado en el momento de solicitarlo.',
-          MAS
-        ];
-      },
-      chips: CIERRE
-    },
-
-    /* ---- contacto ---- */
-    contacto: {
-      msgs: [
-        '<span class="tt">Horario de atención</span>' +
-        '<ul>' +
-        '<li>Lunes a viernes, de 8:00 a. m. a 4:00 p. m.</li>' +
-        '<li>Sábados, domingos y feriados: cerrado.</li>' +
-        '<li>Este asistente atiende las 24 horas, todos los días.</li>' +
-        '</ul>',
-        'Las oficinas del Colegio se ubican en la sede del CFIA, en Curridabat, San José. Los trámites en ventanilla se atienden por orden de llegada.',
-        'Si prefiere atención personalizada, con gusto lo comunico con un funcionario.'
-      ],
-      chips: [
-        ['Comunicarme con un funcionario', 'funcionario'],
-        ['Trámites y requisitos', 'tramites'],
-        ['Volver al inicio', 'menu', 'ghost']
-      ]
-    },
-
-    funcionario: {
-      msgs: [
-        'Con gusto. Traslado su consulta al área de servicio al colegiado junto con el resumen de esta conversación.',
-        'Un funcionario le responderá dentro del horario de atención. Mientras tanto, puedo seguir ayudándole con lo que necesite.<span class="ej">en esta demostración no se envía ningún mensaje real</span>',
-        MAS
-      ],
-      chips: CIERRE_ALT
-    },
-
-    /* ---- respaldo ---- */
-    fallback: {
-      msgs: [
-        'Gracias por escribir. En esta demostración puedo mostrarle los siguientes temas:'
-      ],
-      chips: MENU
-    }
-  };
-
-  /* course selection shortcuts */
-  ['bio','sismico','proyectos'].forEach(function(id, i){
-    NODES['reserva_' + id] = {
-      run: function(){
-        var c = CURSOS[i];
-        data.curso = {
-          nombre: c.nombre,
-          corto: ['Diseño bioclimático','Código Sísmico','Gestión de proyectos'][i],
-          fecha: ['18 y 19 de setiembre','3 de octubre','24 y 25 de octubre'][i]
-        };
-        return 'reserva_nombre';
-      }
+function calcular(tipo, area, valor){
+  var t = TIPOS[tipo];
+  var obra = (valor != null) ? valor : area * t.m2;
+  var lineas = FASES.map(function(f){
+    return {
+      n: f.n, d: f.d,
+      p: f.p * t.factor,
+      monto: Math.round(obra * (f.p/100) * t.factor / 100) * 100
     };
   });
+  var subtotal = 0;
+  lineas.forEach(function(l){ subtotal += l.monto; });
+  var iva = Math.round(subtotal * IVA);
+  return {
+    tipo: tipo, label: t.label, factor: t.factor,
+    area: area, obra: obra, lineas: lineas,
+    subtotal: subtotal, iva: iva, total: subtotal + iva,
+    pctEfectivo: PCT_BASE * t.factor
+  };
+}
 
-  /* ---------- engine ---------- */
+/* ============================================================
+   2. Agenda de ejemplo
+   ============================================================ */
 
-  function go(id){
-    var node = NODES[id];
-    if (!node) return;
-    if (node.run){ go(node.run()); return; }
-    var msgs = typeof node.msgs === 'function' ? node.msgs() : node.msgs;
-    say(msgs, function(){
-      if (node.ask){ pending = node.ask; input.focus({ preventScroll:true }); }
-      showChips(node.chips);
+var CURSOS = [
+  { id:'bim',     dia:'18', mes:'SET', titulo:'BIM aplicado a proyectos de arquitectura',
+    fecha:'18 y 19 de setiembre de 2026', meta:'Virtual en vivo · 12 horas', tags:['BIM','Digital'] },
+  { id:'sismico', dia:'03', mes:'OCT', titulo:'Actualización del Código Sísmico y su aplicación en obra',
+    fecha:'3 de octubre de 2026', meta:'Presencial · 8 horas', tags:['Normativa','Estructural'] },
+  { id:'bio',     dia:'24', mes:'OCT', titulo:'Diseño bioclimático para el trópico húmedo',
+    fecha:'24 y 25 de octubre de 2026', meta:'Modalidad híbrida · 16 horas', tags:['Sostenibilidad'] },
+  { id:'gestion', dia:'14', mes:'NOV', titulo:'Gestión de proyectos y control de costos',
+    fecha:'14 de noviembre de 2026', meta:'Presencial · 8 horas', tags:['Gestión'] }
+];
+function curso(id){
+  for (var i=0;i<CURSOS.length;i++) if (CURSOS[i].id === id) return CURSOS[i];
+  return null;
+}
+
+/* ============================================================
+   3. Motor de intención local (sin API)
+   ============================================================ */
+
+function base(s){
+  var t = String(s).replace(/²/g,'2').replace(/º|°/g,' ').toLowerCase();
+  try { t = t.normalize('NFD').replace(/[̀-ͯ]/g,''); } catch(e){}
+  return t;
+}
+/* para clasificar intención: sin puntuación */
+function norm(s){
+  return base(s).replace(/[¿?¡!.,;:()"'’«»—-]/g,' ').replace(/\s+/g,' ').trim();
+}
+/* para extraer cifras: conserva . y , solo entre dígitos */
+function normNum(s){
+  return base(s)
+    .replace(/[¿?¡!;:()"'’«»]/g,' ')
+    .replace(/([^\d])[.,]/g,'$1 ')
+    .replace(/[.,]([^\d])/g,' $1')
+    .replace(/[.,]$/,' ')
+    .replace(/\s+/g,' ').trim();
+}
+
+var TIPO_PAT = [
+  ['remodelacion',  /(remodelacion|remodelar|remodela|ampliacion|ampliar|remodelado|reforma|restauracion|renovacion de (una |la )?(casa|local))/],
+  ['institucional', /(institucional|escuela|hospital|clinica|universidad|iglesia|centro educativo|edificio publico|municipalidad|guarderia|biblioteca)/],
+  ['comercial',     /(comercial|local|oficina|oficinas|tienda|bodega|restaurante|negocio|plaza|hotel|consultorio)/],
+  ['vivienda',      /(vivienda|casa|residencia|residencial|habitacional|apartamento|casita|quinta|chalet|unifamiliar)/]
+];
+
+/* extrae área en m2, valor de obra en colones y tipo de proyecto */
+function entidades(raw){
+  var t = normNum(raw), e = {};
+
+  var mm = t.match(/(\d+(?:[.,]\d+)?)\s*(millones|millon)/);
+  if (mm){
+    e.valor = Math.round(parseFloat(mm[1].replace(',','.')) * 1000000);
+    t = t.replace(mm[0], ' ');
+  }
+  if (e.valor == null){
+    var cm = t.match(/(\d{1,3}(?:\.\d{3})+)\s*(colones|de colones|c)?/);
+    if (cm){
+      var v = parseInt(cm[1].replace(/\./g,''), 10);
+      if (v >= 1000000){ e.valor = v; t = t.replace(cm[0], ' '); }
+    }
+  }
+
+  var am = t.match(/(\d+(?:[.,]\d+)?)\s*(m2|mts2|metros cuadrados|metros|mts|m\b)/);
+  if (am){
+    var a = parseFloat(am[1].replace(',','.'));
+    if (a > 0 && a <= 100000) e.area = a;
+  }
+
+  for (var i=0;i<TIPO_PAT.length;i++){
+    if (TIPO_PAT[i][1].test(t)){ e.tipo = TIPO_PAT[i][0]; break; }
+  }
+  return e;
+}
+
+/* 30 intenciones con patrones y pesos */
+var INTENTS = [
+  { id:'saludo',        p:[[/^(hola|buenas|buen dia|buenos dias|buenas tardes|buenas noches|que tal|hey|pura vida)\b/,3]] },
+  { id:'despedida',     p:[[/^(gracias|muchas gracias|muy amable|adios|hasta luego|listo|perfecto)\b/,2],[/eso era todo|nada mas gracias/,3]] },
+  { id:'menu',          p:[[/\b(menu|opciones|inicio|volver|ayuda)\b/,2.5],[/que (puede|podes|puedes) hacer|en que me (puede|podes) ayudar/,3]] },
+
+  { id:'honorarios',    p:[[/honorari/,4],[/cuanto (cobro|cobrar|debo cobrar|se cobra|cobrarian|le cobro)/,4],
+                           [/\b(tarifa|tarifas|arancel|aranceles)\b/,3],[/calcul/,2.5],
+                           [/(cobro|cobrar|precio|costo) (de|por) (los |el |un |una )?(plano|planos|diseno|proyecto)/,4],
+                           [/cuanto (vale|cuesta) (hacer |disenar |el diseno)/,2.5]] },
+  { id:'fases',         p:[[/que incluye (el|la|los|las)? ?(arancel|honorario|tarifa|calculo)/,4],
+                           [/\b(fases|etapas|desglose)\b/,3],[/que cubre/,2.5]] },
+
+  { id:'tramites',      p:[[/\b(tramite|tramites|gestion|requisitos|papeles|documentos)\b/,3]] },
+  { id:'incorporacion', p:[[/incorpor/,4],[/colegiarme|colegiarse|quiero ser colegiad|quiero colegiar/,4],[/inscribirme (al|en el) colegio/,4]] },
+  { id:'renovacion',    p:[[/renovar|renovacion (anual|de la colegiatura)/,4],[/cuota anual|pagar la cuota|pago de cuota/,3.5]] },
+  { id:'certificacion', p:[[/certificaci|certificado/,3.5],[/constancia (de|que)/,3.5],[/comprobar que (soy|estoy) colegiad/,4]] },
+  { id:'visado',        p:[[/\bvisad|visar\b/,4],[/sellar (los )?planos|sello de planos/,4],[/\bapc\b|registro de responsabilidad|contrato de servicios profesionales/,3.5]] },
+  { id:'suspension',    p:[[/retiro temporal|suspension|darme de baja|desinscribir|licencia temporal/,4]] },
+
+  { id:'colegiatura',   p:[[/\b(estoy|sigo|estare) al dia\b/,4],[/estado de (mi )?colegiatura|mi colegiatura|mi estado/,4],
+                           [/\b(estoy|sigo) (activo|vigente|habilitado)\b/,3.5],[/\bcolegiatura\b/,2]] },
+  { id:'morosidad',     p:[[/moros|atrasad|atraso|debo (cuotas|la cuota)|arreglo de pago/,4],
+                           [/\b(pongo|ponga|ponerme|ponerse|poner|pone) al dia\b/,4],[/al corriente/,3]] },
+  { id:'pagos',         p:[[/como (pago|puedo pagar)|medios de pago|formas de pago|donde pago/,4],[/\b(sinpe|transferencia|tarjeta|deposito)\b/,3]] },
+  { id:'constancia',    p:[[/constancia digital|descargar (la )?constancia|constancia en pdf/,4]] },
+
+  { id:'cursos',        p:[[/\b(curso|cursos|capacitacion|capacitaciones|taller|talleres|charla|charlas|seminario|agenda|actividades)\b/,3],
+                           [/educacion continua|actualizacion profesional/,3]] },
+  { id:'curso_bim',     p:[[/\bbim\b|\brevit\b|modelado de informacion|modelo de informacion/,4.5]] },
+  { id:'curso_sismico', p:[[/codigo sismico|sismico|sismorresistente|estructural/,4.5]] },
+  { id:'curso_bio',     p:[[/bioclimatic|sostenib|sustentab|\bleed\b|\bedge\b|ambiental|pasiva/,4.5]] },
+  { id:'reserva',       p:[[/reservar|reserva de cupo|\bcupo\b|matricular|matricula|apuntarme|inscribirme en el curso|quiero el curso/,4]] },
+  { id:'creditos',      p:[[/creditos|puntos de educacion|\bcec\b/,3.5]] },
+
+  { id:'contacto',      p:[[/\b(contacto|contactar|telefono|correo electronico|escribirles|comunicarme)\b/,3]] },
+  { id:'horario',       p:[[/\bhorario|a que hora|hasta que hora|cuando (abren|cierran)|abren (los )?(sabado|domingo)/,4]] },
+  { id:'ubicacion',     p:[[/donde (estan|queda|se ubica)|\b(direccion|ubicacion|sede|oficinas)\b|como llego/,3.5]] },
+  { id:'funcionario',   p:[[/hablar con (alguien|una persona|un funcionario|un humano|un asesor|alguno)/,4.5],
+                           [/atencion personalizada|persona real|un humano|no (un|una) (bot|robot)/,4]] },
+  { id:'etica',         p:[[/denuncia|reclamo|queja|\betica\b|tribunal de honor|mala practica|proceder de un colega/,4]] },
+  { id:'normativa',     p:[[/normativa|reglamento|permiso de construccion|uso de suelo|municipalidad|ley 833|codigo de construccion/,3.5]] },
+  { id:'bolsa',         p:[[/bolsa de empleo|oportunidades laborales|busco trabajo|ofertas de empleo/,4]] },
+  { id:'demo',          p:[[/que es esto|quien (hizo|desarrollo|creo) est|es real esto|esto es real|es un bot|demostracion|\bmana\b/,3.5]] },
+  { id:'colegiado_num', p:[[/mi numero de colegiado|numero de carne|carne profesional/,3.5]] }
+];
+
+function detectar(raw){
+  var t = norm(raw);
+  if (!t) return null;
+  var best = null, bestScore = 0;
+  for (var i=0;i<INTENTS.length;i++){
+    var s = 0, it = INTENTS[i];
+    for (var j=0;j<it.p.length;j++){ if (it.p[j][0].test(t)) s += it.p[j][1]; }
+    if (s > bestScore){ bestScore = s; best = it.id; }
+  }
+  return bestScore >= 2 ? { id:best, score:bestScore } : null;
+}
+
+/* ============================================================
+   4. Render del chat
+   ============================================================ */
+
+function scrollDown(smooth){
+  try {
+    log.scrollTo({ top: log.scrollHeight, behavior: (smooth === false || RM) ? 'auto' : 'smooth' });
+  } catch(e){ log.scrollTop = log.scrollHeight; }
+}
+
+function bubble(who, html){
+  var row = document.createElement('div');
+  row.className = 'row ' + who;
+  var b = document.createElement('div');
+  b.className = 'bubble';
+  b.innerHTML = html + '<span class="time">' + hora() + '</span>';
+  row.appendChild(b);
+  log.appendChild(row);
+  scrollDown();
+  return row;
+}
+
+function block(html){
+  var row = document.createElement('div');
+  row.className = 'row blk';
+  row.innerHTML = html;
+  log.appendChild(row);
+  var rv = row.querySelectorAll('.rv');
+  for (var i=0;i<rv.length;i++) rv[i].style.animationDelay = (RM ? 0 : i*45) + 'ms';
+  scrollDown();
+  return row;
+}
+
+function typingRow(){
+  var row = document.createElement('div');
+  row.className = 'row bot';
+  row.innerHTML = '<div class="bubble typing" role="status" aria-label="Escribiendo"><i></i><i></i><i></i></div>';
+  log.appendChild(row);
+  scrollDown();
+  return row;
+}
+
+/* cadencia variable: la pausa depende del largo del mensaje */
+function dwell(html, first){
+  if (RM) return 60;
+  var len = String(html).replace(/<[^>]+>/g,'').length;
+  var base = (first ? 460 : 300) + Math.min(620, len * 5.5);
+  var jitter = 0.86 + Math.random() * 0.28;
+  return Math.max(360, Math.min(1050, base * jitter));
+}
+
+function M(html){ return { t:'m', h:html }; }
+function B(html){ return { t:'b', h:html }; }
+
+function setBusy(v){ busy = v; sendBtn.disabled = v; }
+
+function play(items, done){
+  setBusy(true);
+  var i = 0;
+  (function step(){
+    if (i >= items.length){ setBusy(false); if (done) done(); return; }
+    var it = items[i];
+    var t = typingRow();
+    setTimeout(function(){
+      t.remove();
+      if (it.t === 'b') block(it.h); else bubble('bot', it.h);
+      i++;
+      setTimeout(step, RM ? 20 : 190);
+    }, dwell(it.h, i === 0));
+  })();
+}
+
+function clearChips(){ chipsEl.innerHTML = ''; }
+
+function showChips(list){
+  clearChips();
+  if (!list || !list.length) return;
+  list.slice(0,4).forEach(function(c, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (c[2] === 'ghost' ? ' ghost' : '');
+    b.textContent = c[0];
+    b.setAttribute('data-go', c[1]);
+    b.style.animationDelay = (RM ? 0 : i*50) + 'ms';
+    b.addEventListener('click', function(){
+      if (busy) return;
+      pending = null;
+      bubble('user', esc(c[0]));
+      clearChips();
+      go(c[1]);
     });
-  }
-
-  function handleAsk(text){
-    var key = pending;
-    pending = null;
-
-    if (key === 'nombre'){
-      data.nombre = text.slice(0, 48);
-      go('reserva_correo');
-      return;
-    }
-    if (key === 'correo'){
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(text)){
-        say(['Ese correo no parece estar completo. ¿Me lo confirma de nuevo, por favor?'], function(){
-          pending = 'correo';
-          input.focus({ preventScroll:true });
-        });
-        return;
-      }
-      data.correo = text.slice(0, 60);
-      go('reserva_ok');
-      return;
-    }
-    if (key === 'colegiado'){
-      data.colegiado = text.slice(0, 20).toUpperCase();
-      go('colegiatura_ok');
-      return;
-    }
-  }
-
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    if (busy) return;
-    var text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-    bubble('user', esc(text));
-    clearChips();
-    if (pending) handleAsk(text);
-    else go('fallback');
+    chipsEl.appendChild(b);
   });
+  scrollDown();
+}
 
-  reset.addEventListener('click', function(){
-    if (busy) return;
-    start();
+/* ============================================================
+   5. Constructores de bloques
+   ============================================================ */
+
+var CREST = '<svg viewBox="0 0 40 40" fill="none" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M20 5 L35 34 H5 Z"/><path d="M20 5 V34"/></svg>';
+var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';
+var ICO_DOC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>';
+
+function panelDesglose(r){
+  var lineas = r.lineas.map(function(l){
+    return '<div class="fase rv">' +
+      '<div class="fase-t"><b>' + l.n + '</b><em>' + l.d + '</em></div>' +
+      '<div class="fase-n"><b>' + crc(l.monto) + '</b><em>' + pct(l.p) + '</em></div>' +
+    '</div>';
+  }).join('');
+
+  var metaObra = (r.area ? num(r.area) + ' m² · ' : '') +
+                 'valor estimado de obra ' + crc(r.obra);
+
+  return '<div class="panel">' +
+    '<div class="p-head">' +
+      '<p class="p-eyebrow"><span>Honorarios de referencia</span><span class="tag-ej" style="margin:0">Ejemplo</span></p>' +
+      '<h2 class="p-title">' + r.label + '</h2>' +
+      '<p class="p-meta">' + metaObra + '<br>Base aplicada: ' + pct(r.pctEfectivo) +
+        ' del valor de obra' + (r.factor !== 1 ? ' (' + pct(PCT_BASE) + ' × factor ' + String(r.factor).replace('.',',') + ')' : '') +
+      '</p>' +
+    '</div>' +
+    '<div class="p-body">' + lineas +
+      '<div class="tot rv"><span>Subtotal de honorarios</span><b>' + crc(r.subtotal) + '</b></div>' +
+      '<div class="tot rv"><span>IVA 13 %</span><b>' + crc(r.iva) + '</b></div>' +
+      '<div class="tot grand rv"><span>Total estimado</span><b>' + crc(r.total) + '</b></div>' +
+      '<button class="act solid rv" type="button" data-act="doc_honorarios">' + ICO_DOC + 'Ver constancia de ejemplo</button>' +
+    '</div>' +
+    '<div class="p-foot">Tarifas de ejemplo con fines demostrativos. No corresponden al arancel oficial del Colegio ni sustituyen una cotización profesional.</div>' +
+  '</div>';
+}
+
+function docHonorarios(r){
+  var filas = r.lineas.map(function(l){
+    return '<tr><td>' + l.n + '</td><td>' + pct(l.p) + '</td><td>' + crc(l.monto) + '</td></tr>';
+  }).join('');
+
+  return '<div class="doc"><div class="doc-in">' +
+    '<div class="doc-lh">' + CREST + '<div><b>Colegio de Arquitectos de Costa Rica</b><span>Ventanilla digital</span></div></div>' +
+    '<h2 class="doc-h">Constancia de honorarios de referencia</h2>' +
+    '<p class="doc-folio">Folio CA-2026-04817 · San José, ' + fechaLarga() + '</p>' +
+    '<p class="doc-p">Se hace constar que, para un proyecto de <strong>' + r.label.toLowerCase() + '</strong>' +
+      (r.area ? ' con un área aproximada de ' + num(r.area) + ' m²' : '') +
+      ' y un valor estimado de obra de ' + crc(r.obra) +
+      ', los honorarios profesionales de referencia se distribuyen de la siguiente manera:</p>' +
+    '<table class="doc-tbl"><thead><tr><th>Fase</th><th>Base</th><th>Monto</th></tr></thead><tbody>' +
+      filas +
+      '<tr><td>Subtotal</td><td></td><td>' + crc(r.subtotal) + '</td></tr>' +
+      '<tr><td>IVA 13 %</td><td></td><td>' + crc(r.iva) + '</td></tr>' +
+      '<tr class="sum"><td>Total</td><td></td><td>' + crc(r.total) + '</td></tr>' +
+    '</tbody></table>' +
+    '<p class="doc-p">Documento generado de forma automática con una tabla de tarifas de ejemplo. No constituye un documento oficial del Colegio.</p>' +
+    '<div class="doc-sig"><div><b>Ventanilla digital</b><span>Documento de demostración</span></div>' +
+      '<div class="seal">Sin<br>validez<br>oficial</div></div>' +
+  '</div></div>';
+}
+
+function docConstancia(numero){
+  return '<div class="doc"><div class="doc-in">' +
+    '<div class="doc-lh">' + CREST + '<div><b>Colegio de Arquitectos de Costa Rica</b><span>Ventanilla digital</span></div></div>' +
+    '<h2 class="doc-h">Constancia de condición de colegiado</h2>' +
+    '<p class="doc-folio">Folio CA-2026-09342 · San José, ' + fechaLarga() + '</p>' +
+    '<p class="doc-p">Se hace constar que la persona registrada bajo el número <strong>' + esc(numero) + '</strong> ' +
+      'se encuentra <strong>al día</strong> en sus obligaciones con el Colegio y habilitada para el ejercicio ' +
+      'profesional de la arquitectura, con vigencia al 31 de diciembre de 2026.</p>' +
+    '<table class="doc-tbl"><tbody>' +
+      '<tr><td>Número de colegiado</td><td>' + esc(numero) + '</td></tr>' +
+      '<tr><td>Condición</td><td>Al día</td></tr>' +
+      '<tr><td>Vigencia</td><td>31 de diciembre de 2026</td></tr>' +
+      '<tr><td>Última cuota registrada</td><td>Julio de 2026</td></tr>' +
+    '</tbody></table>' +
+    '<p class="doc-p">Emitida a solicitud de la persona interesada para los fines que estime convenientes. ' +
+      'Datos de ejemplo; esta constancia no proviene de los sistemas del Colegio.</p>' +
+    '<div class="doc-sig"><div><b>Firma electrónica</b><span>Documento de demostración</span></div>' +
+      '<div class="seal">Sin<br>validez<br>oficial</div></div>' +
+  '</div></div>';
+}
+
+function panelStepper(titulo, eyebrow, pasos, nota){
+  var items = pasos.map(function(p, i){
+    return '<button class="step rv" type="button" data-step aria-pressed="false">' +
+      '<span class="step-m" aria-hidden="true">' + (i+1) + CHECK + '</span>' +
+      '<span class="step-t"><b>' + p[0] + '</b>' + (p[1] ? '<em>' + p[1] + '</em>' : '') + '</span>' +
+    '</button>';
+  }).join('');
+
+  return '<div class="panel" data-stepper>' +
+    '<div class="p-head">' +
+      '<p class="p-eyebrow"><span>' + eyebrow + '</span><span class="tag-ej" style="margin:0">Ejemplo</span></p>' +
+      '<h2 class="p-title">' + titulo + '</h2>' +
+      '<div class="prog"><div class="prog-bar"><i style="width:0%"></i></div>' +
+        '<span class="prog-n" data-progn>0 de ' + pasos.length + '</span></div>' +
+      '<p class="p-meta">Toque cada requisito para marcarlo como listo.</p>' +
+    '</div>' +
+    '<div class="p-body">' + items + '</div>' +
+    (nota ? '<div class="p-foot">' + nota + '</div>' : '') +
+  '</div>';
+}
+
+function panelAgenda(lista, subtitulo){
+  var items = lista.map(function(c){
+    return '<div class="ev rv">' +
+      '<div class="ev-d"><b>' + c.dia + '</b><span>' + c.mes + '</span></div>' +
+      '<div class="ev-t"><b>' + c.titulo + '</b><em>' + c.fecha + '<br>' + c.meta + '</em>' +
+        '<div class="pills">' + c.tags.map(function(t){ return '<span class="pill">' + t + '</span>'; }).join('') + '</div>' +
+        '<button class="act" type="button" data-act="reservar:' + c.id + '">Reservar un cupo</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  return '<div class="panel">' +
+    '<div class="p-head">' +
+      '<p class="p-eyebrow"><span>Actualización profesional</span><span class="tag-ej" style="margin:0">Ejemplo</span></p>' +
+      '<h2 class="p-title">Agenda de cursos</h2>' +
+      '<p class="p-meta">' + subtitulo + '</p>' +
+    '</div>' +
+    '<div class="p-body">' + items + '</div>' +
+  '</div>';
+}
+
+function panelKV(eyebrow, titulo, filas, badge, foot, accion){
+  return '<div class="panel">' +
+    '<div class="p-head">' +
+      '<p class="p-eyebrow"><span>' + eyebrow + '</span><span class="tag-ej" style="margin:0">Ejemplo</span></p>' +
+      '<h2 class="p-title">' + titulo + '</h2>' +
+      (badge ? '<p class="p-meta" style="margin-top:10px">' + badge + '</p>' : '') +
+    '</div>' +
+    '<div class="p-body">' +
+      filas.map(function(f){
+        return '<div class="kv rv' + (f[2] ? ' ' + f[2] : '') + '"><span>' + f[0] + '</span><span>' + f[1] + '</span></div>';
+      }).join('') +
+      (accion ? '<button class="act solid rv" type="button" data-act="' + accion[1] + '">' + ICO_DOC + accion[0] + '</button>' : '') +
+    '</div>' +
+    (foot ? '<div class="p-foot">' + foot + '</div>' : '') +
+  '</div>';
+}
+
+/* ============================================================
+   6. Nodos de conversación
+   ============================================================ */
+
+var MENU = [
+  ['Calcular honorarios','calc'],
+  ['Trámites y requisitos','tramites'],
+  ['Agenda de cursos','cursos'],
+  ['Estado de colegiatura','colegiatura']
+];
+var CIERRE = [
+  ['Calcular honorarios','calc'],
+  ['Otro trámite','tramites'],
+  ['Hablar con un funcionario','funcionario'],
+  ['Volver al inicio','menu','ghost']
+];
+var CIERRE_2 = [
+  ['Trámites y requisitos','tramites'],
+  ['Agenda de cursos','cursos'],
+  ['Estado de colegiatura','colegiatura'],
+  ['Volver al inicio','menu','ghost']
+];
+var MAS = '¿Le ayudo con algo más?';
+
+var TIPO_CHIPS = [
+  ['Vivienda','calc_t:vivienda'],
+  ['Comercial','calc_t:comercial'],
+  ['Institucional','calc_t:institucional'],
+  ['Remodelación','calc_t:remodelacion']
+];
+
+var N = {};
+
+N.inicio = function(){
+  return {
+    items:[
+      M(saludo() + '. Le saluda la ventanilla digital del <strong>Colegio de Arquitectos de Costa Rica</strong>.'),
+      M('Atiendo a las personas colegiadas las veinticuatro horas. Escoja una opción o escríbame su consulta con sus propias palabras.')
+    ],
+    chips: MENU
+  };
+};
+
+N.menu = function(){
+  return { items:[M('Con gusto. ¿Sobre cuál tema desea consultar?')], chips: MENU };
+};
+
+/* ---- calculadora ---- */
+
+N.calc = function(){
+  S.calc = {};
+  return {
+    items:[
+      M('Con gusto. Trabajo con una tabla de tarifas de ejemplo para darle un orden de magnitud por fase.<span class="tag-ej">No oficial</span>'),
+      M('¿Qué tipo de proyecto es?')
+    ],
+    chips: TIPO_CHIPS
+  };
+};
+
+N.calc_pedir = function(){
+  var t = TIPOS[S.calc.tipo];
+  return {
+    items:[
+      M('<strong>' + t.label + '</strong>. ¿Cuál es el área aproximada en metros cuadrados?'),
+      M('Si prefiere, escriba directamente el valor estimado de la obra. Por ejemplo: «90 millones».')
+    ],
+    ask:'calc_in'
+  };
+};
+
+N.calc_resultado = function(){
+  var c = S.calc;
+  var r = calcular(c.tipo, c.area || null, c.valor || null);
+  S.r = r;
+  return {
+    items:[
+      M('Un momento, aplico la tabla por fase.'),
+      B(panelDesglose(r)),
+      M('El monto de dirección técnica se factura contra avance de obra. ' + MAS)
+    ],
+    chips:[
+      ['Detalle por fase','fases'],
+      ['Otro tipo de obra','calc'],
+      ['Agenda de cursos','cursos'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.doc_honorarios = function(){
+  if (!S.r) return N.calc();
+  return {
+    items:[
+      B(docHonorarios(S.r)),
+      M('En una versión en producción este documento se genera en PDF y llega a su correo registrado. ' + MAS)
+    ],
+    chips:[
+      ['Otro tipo de obra','calc'],
+      ['Trámites y requisitos','tramites'],
+      ['Hablar con un funcionario','funcionario'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.fases = function(){
+  var filas = FASES.map(function(f){
+    return [f.n, pct(f.p) + ' del valor de obra'];
   });
+  filas.push(['Base total', pct(PCT_BASE) + ' del valor de obra']);
+  return {
+    items:[
+      B(panelKV('Composición del cálculo','Qué incluye cada fase', filas, '',
+        'A la base total se le aplica un factor según el tipo de obra: vivienda 1,00 · comercial 1,10 · institucional 1,15 · remodelación 1,25. Porcentajes de ejemplo.')),
+      M('Cada fase puede contratarse por separado. ' + MAS)
+    ],
+    chips:[
+      ['Calcular honorarios','calc'],
+      ['Trámites y requisitos','tramites'],
+      ['Agenda de cursos','cursos'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
 
-  function start(){
-    pending = null;
-    data = {};
-    clearChips();
-    log.innerHTML =
-      '<div class="divider"><span>Hoy</span></div>' +
-      '<p class="note">Demostración interactiva. Toda la información mostrada es de ejemplo y no proviene de sistemas del Colegio.</p>';
-    scrollDown(false);
-    go('inicio');
+/* ---- trámites ---- */
+
+N.tramites = function(){
+  return {
+    items:[M('Estos son los trámites que le puedo explicar paso a paso:')],
+    chips:[
+      ['Incorporación al Colegio','incorporacion'],
+      ['Renovación anual','renovacion'],
+      ['Visado de planos','visado'],
+      ['Constancia de colegiado','certificacion']
+    ]
+  };
+};
+
+N.incorporacion = function(){
+  return {
+    items:[
+      B(panelStepper('Incorporación al Colegio','Trámite', [
+        ['Título universitario en Arquitectura','Debidamente inscrito y con los sellos correspondientes.'],
+        ['Copia de la cédula de identidad','Por ambos lados, legible.'],
+        ['Fotografía reciente tamaño pasaporte','Fondo claro, sin lentes oscuros.'],
+        ['Formulario de solicitud firmado','Disponible en el portal de la persona colegiada.'],
+        ['Comprobante del pago de incorporación','']
+      ], 'Resolución estimada: de 10 a 15 días hábiles. Requisitos de ejemplo.')),
+      M('Una vez aprobada la solicitud se le convoca al acto de juramentación. ' + MAS)
+    ],
+    chips: CIERRE
+  };
+};
+
+N.renovacion = function(){
+  return {
+    items:[
+      B(panelStepper('Renovación anual de la colegiatura','Trámite', [
+        ['Ingrese al portal de la persona colegiada','Con su número de colegiado y contraseña.'],
+        ['Verifique correo y teléfono','El comprobante llega al correo registrado.'],
+        ['Cancele la cuota anual vigente','Transferencia, tarjeta o ventanilla.'],
+        ['Descargue el comprobante','Queda archivado en su expediente.']
+      ], 'La renovación se refleja en el sistema en un máximo de 24 horas. Pasos de ejemplo.')),
+      M('Si su cuota tiene atraso, le puedo indicar cómo ponerse al día. ' + MAS)
+    ],
+    chips:[
+      ['Estoy atrasado con la cuota','morosidad'],
+      ['Estado de colegiatura','colegiatura'],
+      ['Calcular honorarios','calc'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.visado = function(){
+  return {
+    items:[
+      B(panelStepper('Visado de planos constructivos','Trámite', [
+        ['Registre el proyecto en el sistema de trámites','Con la información del propietario y la ubicación.'],
+        ['Adjunte los planos y el contrato de servicios','En el formato digital solicitado.'],
+        ['Cancele los derechos de visado','El monto depende del valor tasado de la obra.'],
+        ['Reciba el sello digital','Con el sello puede continuar el trámite municipal.']
+      ], 'Pasos de ejemplo. El trámite real se realiza en la plataforma del CFIA.')),
+      M('El visado corresponde a la fase de planos constructivos del cálculo de honorarios. ' + MAS)
+    ],
+    chips:[
+      ['Calcular honorarios','calc'],
+      ['Otro trámite','tramites'],
+      ['Hablar con un funcionario','funcionario'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.certificacion = function(){
+  return {
+    items:[
+      B(panelStepper('Constancia de condición de colegiado','Trámite', [
+        ['Indique su número de colegiado',''],
+        ['Encuéntrese al día con la cuota','Requisito indispensable para la emisión.'],
+        ['Señale el uso que le dará','Trámite bancario, licitación, empleador.'],
+        ['Reciba el documento firmado electrónicamente','Emisión estimada: 1 día hábil.']
+      ], 'Requisitos de ejemplo.')),
+      M('Puedo revisar su estado y generarle una constancia de muestra en este momento. ' + MAS)
+    ],
+    chips:[
+      ['Consultar mi colegiatura','colegiatura'],
+      ['Otro trámite','tramites'],
+      ['Agenda de cursos','cursos'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.suspension = function(){
+  return {
+    items:[
+      M('<strong>Retiro temporal del ejercicio profesional</strong><span class="tag-ej">Ejemplo</span>'),
+      M('Se solicita por escrito, indicando el periodo. Durante el retiro no se cobra cuota, pero tampoco se puede firmar planos ni ejercer. La reincorporación se tramita en línea. ' + MAS)
+    ],
+    chips: CIERRE
+  };
+};
+
+/* ---- colegiatura ---- */
+
+N.colegiatura = function(){
+  return {
+    items:[
+      M('Con gusto reviso el estado de su colegiatura.'),
+      M('¿Me indica su número de colegiado? Puede escribirlo abajo.<span class="tag-ej">Cualquier número sirve en esta demostración</span>')
+    ],
+    ask:'colegiado'
+  };
+};
+
+N.colegiatura_ok = function(){
+  return {
+    items:[
+      M('Consulto el registro, un momento.'),
+      B(panelKV('Persona colegiada','Estado de colegiatura', [
+        ['Número', esc(S.colegiado)],
+        ['Condición','Al día','ok'],
+        ['Vigencia','31 de diciembre de 2026'],
+        ['Última cuota','Julio de 2026']
+      ], '<span class="badge ok"><i></i>Habilitado para ejercer</span>',
+         'Datos de ejemplo. No provienen de los sistemas del Colegio.',
+         ['Ver constancia digital','doc_constancia'])),
+      M('Estando al día puede solicitar constancias y matricular cursos con la tarifa preferencial. ' + MAS)
+    ],
+    chips:[
+      ['Calcular honorarios','calc'],
+      ['Agenda de cursos','cursos'],
+      ['Trámites y requisitos','tramites'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.doc_constancia = function(){
+  return {
+    items:[
+      B(docConstancia(S.colegiado || 'A-0000')),
+      M('En una versión en producción la constancia se emite firmada electrónicamente y llega a su correo en cuestión de minutos. ' + MAS)
+    ],
+    chips: CIERRE_2
+  };
+};
+
+N.constancia = function(){
+  if (S.colegiado) return N.doc_constancia();
+  return {
+    items:[
+      M('Con gusto le genero una constancia digital de muestra.'),
+      M('¿Me indica su número de colegiado?<span class="tag-ej">Cualquier número sirve en esta demostración</span>')
+    ],
+    ask:'colegiado'
+  };
+};
+
+N.morosidad = function(){
+  return {
+    items:[
+      M('<strong>Cuotas con atraso</strong><span class="tag-ej">Ejemplo</span>'),
+      M('Con un atraso menor a tres meses puede cancelar en línea y su condición se restablece en 24 horas. Con más de tres meses se coordina un arreglo de pago con el área financiera. Mientras exista atraso no se emiten constancias.'),
+      M(MAS)
+    ],
+    chips:[
+      ['Formas de pago','pagos'],
+      ['Estado de colegiatura','colegiatura'],
+      ['Hablar con un funcionario','funcionario'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.pagos = function(){
+  return {
+    items:[
+      B(panelKV('Medios habilitados','Formas de pago', [
+        ['Portal de la persona colegiada','Tarjeta de débito o crédito'],
+        ['Transferencia bancaria','Con el número de colegiado como referencia'],
+        ['SINPE Móvil','Confirmación en el mismo día'],
+        ['Ventanilla en la sede','Lunes a viernes, 8:00 a. m. a 4:00 p. m.']
+      ], '', 'Medios de ejemplo. En una versión en producción el pago se completa dentro de esta misma ventanilla.')),
+      M(MAS)
+    ],
+    chips: CIERRE_2
+  };
+};
+
+/* ---- agenda ---- */
+
+N.cursos = function(){
+  return {
+    items:[
+      B(panelAgenda(CURSOS, 'Próximas actividades de actualización profesional.')),
+      M('Puedo reservarle un cupo en este momento y enviarle la confirmación por correo.')
+    ],
+    chips:[
+      ['Reservar un cupo','reserva'],
+      ['Cursos de BIM','curso_bim'],
+      ['Contacto y horarios','contacto'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+function agendaFiltrada(tag, etiqueta){
+  var lista = CURSOS.filter(function(c){ return c.tags.indexOf(tag) >= 0; });
+  if (!lista.length) lista = CURSOS;
+  return {
+    items:[
+      M('Filtro la agenda por <strong>' + etiqueta + '</strong>.'),
+      B(panelAgenda(lista, 'Resultados para ' + etiqueta + '.')),
+      M('¿Le reservo un cupo?')
+    ],
+    chips:[
+      ['Reservar un cupo','reserva'],
+      ['Ver toda la agenda','cursos'],
+      ['Estado de colegiatura','colegiatura'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+}
+
+N.curso_bim     = function(){ return agendaFiltrada('BIM','BIM'); };
+N.curso_sismico = function(){ return agendaFiltrada('Normativa','normativa y estructuras'); };
+N.curso_bio     = function(){ return agendaFiltrada('Sostenibilidad','sostenibilidad'); };
+
+N.creditos = function(){
+  return {
+    items:[
+      M('<strong>Créditos de educación continua</strong><span class="tag-ej">Ejemplo</span>'),
+      M('Cada curso otorga créditos según su duración: 8 horas equivalen a 1 crédito. Los créditos quedan registrados en su expediente al finalizar la actividad y se reflejan en su constancia. ' + MAS)
+    ],
+    chips:[
+      ['Agenda de cursos','cursos'],
+      ['Estado de colegiatura','colegiatura'],
+      ['Calcular honorarios','calc'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.reserva = function(){
+  return {
+    items:[M('Con gusto. ¿En cuál actividad desea reservar?')],
+    chips: CURSOS.slice(0,3).map(function(c){
+      return [c.titulo.length > 30 ? c.titulo.slice(0,28).trim() + '…' : c.titulo, 'reservar:' + c.id];
+    }).concat([['Mejor después','menu','ghost']])
+  };
+};
+
+N.reserva_nombre = function(){
+  return {
+    items:[
+      M('Excelente elección: <strong>' + S.curso.titulo + '</strong>, ' + S.curso.fecha + '.'),
+      M('¿Me indica su nombre completo, tal como aparece en su registro?')
+    ],
+    ask:'nombre'
+  };
+};
+
+N.reserva_correo = function(){
+  return {
+    items:[M('Gracias, ' + esc(S.nombre.split(' ')[0]) + '. ¿A cuál correo electrónico le envío la confirmación?')],
+    ask:'correo'
+  };
+};
+
+N.reserva_ok = function(){
+  return {
+    items:[
+      M('Un momento, registro su cupo.'),
+      B(panelKV('Confirmación','Cupo reservado', [
+        ['Actividad', S.curso.titulo],
+        ['Fecha', S.curso.fecha],
+        ['Modalidad', S.curso.meta],
+        ['A nombre de', esc(S.nombre)],
+        ['Correo', esc(S.correo)],
+        ['Estado','Reservado','ok']
+      ], '<span class="badge ok"><i></i>Reserva registrada</span>',
+         'Datos de ejemplo. En esta demostración no se envía ningún correo real.')),
+      M('En una versión en producción recibiría el enlace de pago y un recordatorio 48 horas antes. ' + MAS)
+    ],
+    chips: CIERRE_2
+  };
+};
+
+/* ---- contacto ---- */
+
+N.contacto = function(){
+  return {
+    items:[
+      B(panelKV('Atención al colegiado','Contacto y horarios', [
+        ['Ventanilla digital','24 horas, todos los días'],
+        ['Atención presencial','Lunes a viernes, 8:00 a. m. a 4:00 p. m.'],
+        ['Fines de semana y feriados','Cerrado'],
+        ['Sede','CFIA, Curridabat, San José']
+      ], '', 'Los trámites en ventanilla se atienden por orden de llegada.')),
+      M('Si prefiere atención personalizada, con gusto lo comunico con un funcionario.')
+    ],
+    chips:[
+      ['Comunicarme con un funcionario','funcionario'],
+      ['Trámites y requisitos','tramites'],
+      ['Calcular honorarios','calc'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.horario = function(){
+  return {
+    items:[
+      M('<strong>Horario de atención</strong>'),
+      M('La atención presencial es de lunes a viernes, de 8:00 a. m. a 4:00 p. m. Sábados, domingos y feriados permanece cerrado. Esta ventanilla digital atiende las veinticuatro horas, todos los días. ' + MAS)
+    ],
+    chips:[
+      ['Ubicación de la sede','ubicacion'],
+      ['Trámites y requisitos','tramites'],
+      ['Hablar con un funcionario','funcionario'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.ubicacion = function(){
+  return {
+    items:[
+      M('<strong>Ubicación</strong>'),
+      M('Las oficinas del Colegio se ubican en la sede del CFIA, en Curridabat, San José. Los trámites en ventanilla se atienden por orden de llegada dentro del horario de atención. ' + MAS)
+    ],
+    chips:[
+      ['Horario de atención','horario'],
+      ['Trámites y requisitos','tramites'],
+      ['Hablar con un funcionario','funcionario'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.funcionario = function(){
+  return {
+    items:[
+      M('Con gusto. Traslado su consulta al área de servicio al colegiado junto con el resumen de esta conversación.'),
+      M('Un funcionario le responderá dentro del horario de atención. Mientras tanto, sigo a su disposición.<span class="tag-ej">En esta demostración no se envía ningún mensaje real</span>')
+    ],
+    chips: CIERRE_2
+  };
+};
+
+N.etica = function(){
+  return {
+    items:[
+      M('<strong>Denuncias y consultas de ética profesional</strong><span class="tag-ej">Ejemplo</span>'),
+      M('Las denuncias se presentan por escrito ante el Tribunal de Honor, con la identificación de las partes y la prueba disponible. El proceso es confidencial. Por su naturaleza, este trámite siempre se traslada a una persona funcionaria.')
+    ],
+    chips:[
+      ['Comunicarme con un funcionario','funcionario'],
+      ['Trámites y requisitos','tramites'],
+      ['Contacto y horarios','contacto'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.normativa = function(){
+  return {
+    items:[
+      M('<strong>Consultas de normativa</strong>'),
+      M('Puedo orientarle sobre el trámite, pero la interpretación de normativa la resuelve el área técnica del Colegio. Los permisos de construcción se tramitan ante la municipalidad correspondiente, luego del visado de planos. ' + MAS)
+    ],
+    chips:[
+      ['Visado de planos','visado'],
+      ['Comunicarme con un funcionario','funcionario'],
+      ['Calcular honorarios','calc'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.bolsa = function(){
+  return {
+    items:[
+      M('<strong>Bolsa de empleo</strong><span class="tag-ej">Ejemplo</span>'),
+      M('El Colegio publica oportunidades para personas colegiadas al día. En una versión en producción esta ventanilla le mostraría las vacantes vigentes y le permitiría postularse desde aquí. ' + MAS)
+    ],
+    chips: CIERRE_2
+  };
+};
+
+N.colegiado_num = function(){
+  return {
+    items:[
+      M('Su número de colegiado aparece en su carné y en el encabezado de sus recibos. Si no lo tiene a mano, un funcionario puede confirmárselo con su cédula. ' + MAS)
+    ],
+    chips:[
+      ['Estado de colegiatura','colegiatura'],
+      ['Hablar con un funcionario','funcionario'],
+      ['Trámites y requisitos','tramites'],
+      ['Volver al inicio','menu','ghost']
+    ]
+  };
+};
+
+N.demo = function(){
+  return {
+    items:[
+      M('Esta es una demostración de <strong>ventanilla digital</strong> preparada por Mana Solutions. Toda la información es de ejemplo y no proviene de sistemas del Colegio.'),
+      M('En el ícono de información, arriba a la derecha, encontrará el detalle de lo que conectaría una versión en producción.')
+    ],
+    chips: MENU
+  };
+};
+
+N.saludo = function(){
+  return {
+    items:[M(saludo() + '. ¿En qué le puedo ayudar hoy?')],
+    chips: MENU
+  };
+};
+
+N.despedida = function(){
+  return {
+    items:[M('Con mucho gusto. Quedo a su disposición las veinticuatro horas.')],
+    chips: MENU
+  };
+};
+
+N.fallback = function(){
+  return {
+    items:[
+      M('Le entiendo, pero en esta demostración manejo un conjunto acotado de temas. Estos son los que puedo mostrarle:')
+    ],
+    chips: MENU
+  };
+};
+
+/* ============================================================
+   7. Motor
+   ============================================================ */
+
+function go(id){
+  if (!id) return;
+
+  /* rutas con parámetro */
+  if (id.indexOf('calc_t:') === 0){
+    S.calc = S.calc || {};
+    S.calc.tipo = id.slice(7);
+    if (S.calc.area || S.calc.valor) { render(N.calc_resultado()); return; }
+    render(N.calc_pedir());
+    return;
+  }
+  if (id.indexOf('reservar:') === 0){
+    var c = curso(id.slice(9));
+    if (!c) { render(N.cursos()); return; }
+    S.curso = c;
+    render(N.reserva_nombre());
+    return;
   }
 
-  start();
+  var fn = N[id];
+  if (!fn){ render(N.fallback()); return; }
+  render(fn());
+}
+
+function render(node){
+  play(node.items, function(){
+    if (node.ask){
+      pending = node.ask;
+      try { input.focus({ preventScroll:true }); } catch(e){ input.focus(); }
+    }
+    showChips(node.chips);
+  });
+}
+
+/* ---- captura de campos ---- */
+
+function handleAsk(text){
+  var key = pending;
+  pending = null;
+
+  if (key === 'nombre'){
+    S.nombre = text.slice(0,52);
+    go('reserva_correo');
+    return;
+  }
+  if (key === 'correo'){
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(text)){
+      play([M('Ese correo no parece estar completo. ¿Me lo confirma de nuevo, por favor?')], function(){
+        pending = 'correo';
+        try { input.focus({ preventScroll:true }); } catch(e){}
+      });
+      return;
+    }
+    S.correo = text.slice(0,64);
+    go('reserva_ok');
+    return;
+  }
+  if (key === 'colegiado'){
+    var v = text.replace(/\s+/g,' ').trim().slice(0,20).toUpperCase();
+    if (v.length < 2){
+      play([M('¿Me confirma el número de colegiado, por favor?')], function(){
+        pending = 'colegiado';
+        try { input.focus({ preventScroll:true }); } catch(e){}
+      });
+      return;
+    }
+    S.colegiado = v;
+    go('colegiatura_ok');
+    return;
+  }
+  if (key === 'calc_in'){
+    var e = entidades(text);
+    var n = text.match(/(\d+(?:[.,]\d+)?)/);
+    if (e.valor != null) S.calc.valor = e.valor;
+    else if (e.area != null) S.calc.area = e.area;
+    else if (n){
+      var raw = parseFloat(n[1].replace(/\./g,'').replace(',','.'));
+      if (raw >= 100000) S.calc.valor = Math.round(raw);
+      else if (raw > 0) S.calc.area = raw;
+    }
+    if (e.tipo) S.calc.tipo = e.tipo;
+
+    if (S.calc.area == null && S.calc.valor == null){
+      play([M('No logré leer una cifra. Indíqueme el área en metros cuadrados, por ejemplo «120», o el valor de obra, por ejemplo «90 millones».')], function(){
+        pending = 'calc_in';
+        try { input.focus({ preventScroll:true }); } catch(e){}
+      });
+      return;
+    }
+    render(N.calc_resultado());
+    return;
+  }
+
+  routeFree(text);
+}
+
+/* ---- texto libre ---- */
+
+function routeFree(text){
+  var det = detectar(text);
+  var ent = entidades(text);
+
+  if (det && det.id === 'honorarios'){
+    S.calc = { tipo: ent.tipo || null, area: ent.area || null, valor: ent.valor || null };
+
+    if (S.calc.tipo && (S.calc.area || S.calc.valor)){
+      var partes = ['proyecto de ' + TIPOS[S.calc.tipo].label.toLowerCase()];
+      if (S.calc.area) partes.push(num(S.calc.area) + ' m²');
+      if (S.calc.valor) partes.push('valor de obra ' + crc(S.calc.valor));
+      play([M('Entendí: <strong>' + partes.join(' · ') + '</strong>. Aplico la tabla de referencia.')], function(){
+        render(N.calc_resultado());
+      });
+      return;
+    }
+    if (S.calc.tipo){ render(N.calc_pedir()); return; }
+    if (S.calc.area || S.calc.valor){
+      var d = S.calc.area ? num(S.calc.area) + ' m²' : 'valor de obra ' + crc(S.calc.valor);
+      play([M('Anoté <strong>' + d + '</strong>. ¿Qué tipo de proyecto es?')], function(){
+        showChips(TIPO_CHIPS);
+      });
+      return;
+    }
+    render(N.calc());
+    return;
+  }
+
+  if (det && N[det.id]) { go(det.id); return; }
+  go('fallback');
+}
+
+/* ---- acciones dentro de los bloques ---- */
+
+log.addEventListener('click', function(ev){
+  var st = ev.target.closest ? ev.target.closest('[data-step]') : null;
+  if (st){ toggleStep(st); return; }
+
+  var a = ev.target.closest ? ev.target.closest('[data-act]') : null;
+  if (!a || busy) return;
+  var act = a.getAttribute('data-act');
+  a.disabled = true;
+  a.style.opacity = '.55';
+  pending = null;
+  clearChips();
+  go(act);
+});
+
+function toggleStep(btn){
+  var on = btn.getAttribute('aria-pressed') === 'true';
+  btn.setAttribute('aria-pressed', on ? 'false' : 'true');
+  var panel = btn.closest('[data-stepper]');
+  if (!panel) return;
+  var all = panel.querySelectorAll('[data-step]');
+  var done = panel.querySelectorAll('[data-step][aria-pressed="true"]').length;
+  var bar = panel.querySelector('.prog-bar i');
+  var lab = panel.querySelector('[data-progn]');
+  if (bar) bar.style.width = (done / all.length * 100) + '%';
+  if (lab) lab.textContent = done + ' de ' + all.length;
+}
+
+/* ============================================================
+   8. Composer, reinicio, apertura, gaveta
+   ============================================================ */
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  if (busy) return;
+  var text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  bubble('user', esc(text));
+  clearChips();
+  if (pending) handleAsk(text);
+  else routeFree(text);
+});
+
+resetBtn.addEventListener('click', function(){ if (!busy) start(); });
+
+function start(){
+  pending = null;
+  S = {};
+  clearChips();
+  log.innerHTML =
+    '<div class="rail"><span>Hoy</span></div>' +
+    '<p class="note">Demostración interactiva. Toda la información mostrada es de ejemplo y no proviene de sistemas del Colegio.</p>';
+  scrollDown(false);
+  go('inicio');
+}
+
+/* ---- apertura ---- */
+
+var overGone = false;
+function dismissOverture(){
+  if (overGone) return;
+  overGone = true;
+  overture.classList.add('gone');
+  setTimeout(function(){ overture.setAttribute('hidden',''); }, 460);
+}
+overture.addEventListener('click', dismissOverture);
+overture.addEventListener('keydown', function(e){
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape'){ e.preventDefault(); dismissOverture(); }
+});
+setTimeout(dismissOverture, RM ? 700 : 2350);
+
+/* ---- gaveta ---- */
+
+var lastFocus = null;
+
+function openDrawer(){
+  lastFocus = document.activeElement;
+  scrim.removeAttribute('hidden');
+  drawer.removeAttribute('hidden');
+  /* forzar reflow para que la transición corra */
+  void drawer.offsetWidth;
+  scrim.classList.add('open');
+  drawer.classList.add('open');
+  infoBtn.setAttribute('aria-expanded','true');
+  drClose.focus();
+  document.addEventListener('keydown', onEsc);
+}
+function closeDrawer(){
+  scrim.classList.remove('open');
+  drawer.classList.remove('open');
+  infoBtn.setAttribute('aria-expanded','false');
+  document.removeEventListener('keydown', onEsc);
+  setTimeout(function(){
+    scrim.setAttribute('hidden','');
+    drawer.setAttribute('hidden','');
+  }, 340);
+  if (lastFocus && lastFocus.focus) lastFocus.focus();
+}
+function onEsc(e){ if (e.key === 'Escape') closeDrawer(); }
+
+infoBtn.addEventListener('click', function(){
+  if (drawer.classList.contains('open')) closeDrawer(); else openDrawer();
+});
+drClose.addEventListener('click', closeDrawer);
+scrim.addEventListener('click', closeDrawer);
+
+/* ---- arranque ---- */
+start();
+
 })();
 </script>
 </body>
