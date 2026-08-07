@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16283C">
+<meta name="description" content="Demostración de asistente virtual institucional. Datos de ejemplo.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316283C'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='30' fill='%23E7D0AE' text-anchor='middle'%3ECA%3C/text%3E%3C/svg%3E">
+<title>Asistente virtual · Colegio de Arquitectos de Costa Rica</title>
+<style>
+  :root{
+    --ink:#16283C;
+    --ink-deep:#0E1C2B;
+    --canvas:#F3F0EA;
+    --bot:#FFFFFF;
+    --user:#1E3550;
+    --accent:#A9763F;
+    --accent-soft:#EFE2D3;
+    --text:#1B2733;
+    --muted:#6E7C8A;
+    --line:#E2DDD4;
+    --radius:18px;
+    --shadow:0 1px 2px rgba(15,28,43,.06), 0 8px 24px rgba(15,28,43,.06);
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+    color-scheme:light;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--text);
+    background:#0D1826;
+    background:radial-gradient(1100px 620px at 50% -12%, #26425F 0%, #142438 45%, #0B1420 100%);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow:hidden;
+  }
+
+  /* ---------- shell ---------- */
+  .app{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    max-width:460px;
+    height:100vh;
+    height:100dvh;
+    margin:0 auto;
+    background:var(--canvas);
+    overflow:hidden;
+    isolation:isolate;
+  }
+  @media (min-width:560px) and (min-height:640px){
+    body{display:flex;align-items:center;justify-content:center;padding:28px 16px}
+    .app{
+      height:min(860px, calc(100dvh - 56px));
+      border-radius:22px;
+      box-shadow:0 30px 70px rgba(5,12,22,.55), 0 2px 0 rgba(255,255,255,.06) inset;
+    }
+  }
+
+  /* ---------- header ---------- */
+  header{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+    padding-top:max(14px, env(safe-area-inset-top));
+    background:linear-gradient(180deg, #1B3049 0%, var(--ink) 100%);
+    color:#fff;
+    border-bottom:1px solid rgba(169,118,63,.55);
+    box-shadow:0 6px 18px rgba(11,20,32,.18);
+    z-index:3;
+  }
+  .mono{
+    flex:0 0 auto;
+    width:44px;height:44px;
+    display:grid;place-items:center;
+    border-radius:50%;
+    background:linear-gradient(160deg,#24405E,#152841);
+    border:1.5px solid var(--accent);
+    font-family:var(--serif);
+    font-size:17px;
+    letter-spacing:.06em;
+    color:#F0DFC9;
+  }
+  .htext{min-width:0}
+  .htitle{
+    font-family:var(--serif);
+    font-size:15.5px;
+    line-height:1.25;
+    font-weight:600;
+    letter-spacing:.005em;
+    margin:0 0 3px;
+    color:#FFFFFF;
+  }
+  .hsub{
+    display:flex;align-items:center;gap:6px;
+    font-size:11.5px;
+    letter-spacing:.035em;
+    text-transform:uppercase;
+    color:#A9BDD2;
+    margin:0;
+  }
+  .dot{
+    width:6px;height:6px;border-radius:50%;
+    background:#59C08A;
+    box-shadow:0 0 0 0 rgba(89,192,138,.55);
+    animation:pulse 2.6s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(89,192,138,.5)}
+    70%{box-shadow:0 0 0 7px rgba(89,192,138,0)}
+    100%{box-shadow:0 0 0 0 rgba(89,192,138,0)}
+  }
+
+  /* ---------- log ---------- */
+  .log{
+    flex:1 1 auto;
+    min-height:0;              /* lets the log shrink so chips never get clipped */
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    padding:16px 14px 6px;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(169,118,63,.05), transparent 42%),
+      var(--canvas);
+  }
+  .divider{
+    display:flex;align-items:center;justify-content:center;
+    margin:2px 0 14px;
+  }
+  .divider span{
+    font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--muted);
+    background:rgba(255,255,255,.75);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:4px 12px;
+  }
+  .note{
+    text-align:center;
+    font-size:11.5px;
+    line-height:1.5;
+    color:var(--muted);
+    max-width:82%;
+    margin:0 auto 16px;
+  }
+  .row{
+    display:flex;
+    margin-bottom:10px;
+    animation:rise .28s cubic-bezier(.22,.75,.3,1) both;
+  }
+  @keyframes rise{
+    from{opacity:0;transform:translate3d(0,10px,0)}
+    to{opacity:1;transform:translate3d(0,0,0)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .row{animation:none}
+    .dot{animation:none}
+  }
+  .row.bot{justify-content:flex-start}
+  .row.user{justify-content:flex-end}
+  .bubble{
+    position:relative;
+    max-width:84%;
+    padding:10px 13px 8px;
+    font-size:14.5px;
+    line-height:1.52;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    word-wrap:break-word;
+    overflow-wrap:anywhere;
+  }
+  .bot .bubble{
+    background:var(--bot);
+    border:1px solid var(--line);
+    border-bottom-left-radius:6px;
+    color:var(--text);
+  }
+  .user .bubble{
+    background:var(--user);
+    color:#F2F6FA;
+    border-bottom-right-radius:6px;
+  }
+  .bubble strong{font-weight:650}
+  .bubble .tt{
+    display:block;
+    font-family:var(--serif);
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:6px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--accent-soft);
+  }
+  .bubble ol,.bubble ul{margin:6px 0 2px;padding-left:19px}
+  .bubble li{margin-bottom:5px}
+  .bubble ol{list-style:decimal}
+  .bubble ul{list-style:none;padding-left:2px}
+  .bubble ul li{position:relative;padding-left:14px}
+  .bubble ul li::before{
+    content:"";position:absolute;left:0;top:.62em;
+    width:5px;height:5px;border-radius:50%;background:var(--accent);
+  }
+  .ej{
+    display:inline-block;
+    font-size:10.5px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:#8A6534;
+    background:var(--accent-soft);
+    border-radius:4px;
+    padding:1px 6px;
+    vertical-align:1px;
+    margin-left:6px;
+    font-weight:600;
+  }
+  .card{margin:8px 0 2px;border-top:1px solid var(--accent-soft)}
+  .card .r{
+    display:flex;justify-content:space-between;gap:12px;
+    padding:6px 0;
+    border-bottom:1px solid #F1EDE6;
+    font-size:13.5px;
+  }
+  .card .r span:first-child{color:var(--muted)}
+  .card .r span:last-child{text-align:right;font-weight:600;color:var(--ink)}
+  .card .r.ok span:last-child{color:#2E7D57}
+  .course{
+    padding:9px 0;
+    border-bottom:1px solid #F1EDE6;
+  }
+  .course:last-child{border-bottom:0;padding-bottom:2px}
+  .course b{display:block;font-weight:650;color:var(--ink);margin-bottom:2px}
+  .course em{
+    font-style:normal;font-size:12.5px;color:var(--muted);
+    display:block;letter-spacing:.01em;
+  }
+  .time{
+    display:block;
+    text-align:right;
+    font-size:10.5px;
+    letter-spacing:.03em;
+    margin-top:3px;
+    color:var(--muted);
+  }
+  .user .time{color:rgba(226,236,245,.62)}
+
+  /* typing */
+  .typing{display:flex;align-items:center;gap:5px;padding:14px 15px}
+  .typing i{
+    width:6px;height:6px;border-radius:50%;
+    background:#9FAEBC;display:block;
+    animation:blink 1.25s infinite ease-in-out both;
+  }
+  .typing i:nth-child(2){animation-delay:.16s}
+  .typing i:nth-child(3){animation-delay:.32s}
+  @keyframes blink{
+    0%,80%,100%{opacity:.28;transform:translateY(0)}
+    40%{opacity:1;transform:translateY(-3px)}
+  }
+
+  /* ---------- chips ---------- */
+  .chips{
+    flex:0 0 auto;
+    display:flex;flex-wrap:wrap;gap:8px;
+    max-height:34vh;
+    overflow-y:auto;
+    padding:4px 14px 10px;
+    background:linear-gradient(180deg, rgba(243,240,234,0) 0%, var(--canvas) 22%);
+    z-index:2;
+  }
+  .chip{
+    appearance:none;
+    font:inherit;
+    font-size:13.5px;
+    line-height:1.2;
+    min-height:38px;
+    padding:9px 14px;
+    border-radius:999px;
+    border:1px solid #D9D2C6;
+    background:#fff;
+    color:var(--ink);
+    cursor:pointer;
+    box-shadow:0 1px 2px rgba(15,28,43,.05);
+    transition:transform .12s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+    animation:chipIn .26s cubic-bezier(.22,.75,.3,1) both;
+    -webkit-tap-highlight-color:transparent;
+  }
+  @keyframes chipIn{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}
+  .chip:hover{border-color:var(--accent);background:#FFFDFA;box-shadow:0 2px 8px rgba(169,118,63,.14)}
+  .chip:active{transform:scale(.97);background:var(--accent-soft)}
+  .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .chip.ghost{background:transparent;border-color:#DFD8CC;color:var(--muted)}
+  .chip.ghost:hover{color:var(--ink);border-color:#C9BFAF;background:rgba(255,255,255,.6)}
+
+  /* ---------- composer ---------- */
+  .composer{
+    flex:0 0 auto;
+    display:flex;align-items:center;gap:9px;
+    padding:9px 12px;
+    background:#fff;
+    border-top:1px solid var(--line);
+  }
+  .composer input{
+    flex:1 1 auto;
+    min-width:0;
+    font:inherit;
+    font-size:16px; /* prevents iOS zoom on focus */
+    padding:11px 14px;
+    border-radius:999px;
+    border:1px solid #DDD6CA;
+    background:#FAF8F4;
+    color:var(--text);
+    outline:none;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .composer input::placeholder{color:#9AA6B2}
+  .composer input:focus{border-color:var(--accent);background:#fff}
+  .send{
+    flex:0 0 auto;
+    width:42px;height:42px;
+    display:grid;place-items:center;
+    border:0;border-radius:50%;
+    background:var(--ink);
+    color:#fff;
+    cursor:pointer;
+    transition:transform .12s ease, background .15s ease, opacity .15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .send:hover{background:#23405E}
+  .send:active{transform:scale(.94)}
+  .send:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .send[disabled]{opacity:.42;cursor:default;transform:none}
+  .send svg{width:19px;height:19px;display:block}
+
+  /* ---------- footer ---------- */
+  footer{
+    flex:0 0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:8px 14px;
+    padding-bottom:max(8px, env(safe-area-inset-bottom));
+    background:var(--ink-deep);
+    color:#8FA2B6;
+    font-size:9.6px;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    line-height:1.45;
+  }
+  footer b{color:#D9C3A4;font-weight:600;letter-spacing:.05em}
+  .reset{
+    appearance:none;background:none;border:0;
+    font:inherit;font-size:9.6px;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;
+    color:#8FA2B6;cursor:pointer;padding:2px 0;
+    border-bottom:1px solid rgba(143,162,182,.4);
+    transition:color .15s ease,border-color .15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .reset:hover{color:#E7D6BE;border-color:rgba(231,214,190,.6)}
+  .reset:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .log::-webkit-scrollbar{width:8px}
+  .log::-webkit-scrollbar-thumb{background:#DED8CD;border-radius:8px;border:2px solid var(--canvas)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<main class="app" role="application" aria-label="Asistente virtual del Colegio de Arquitectos de Costa Rica">
+
+  <header>
+    <div class="mono" aria-hidden="true">CA</div>
+    <div class="htext">
+      <p class="htitle">Colegio de Arquitectos de Costa&nbsp;Rica</p>
+      <p class="hsub"><span class="dot" aria-hidden="true"></span>Asistente virtual · Demostración</p>
+    </div>
+  </header>
+
+  <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions">
+    <div class="divider"><span>Hoy</span></div>
+    <p class="note">Demostración interactiva. Toda la información mostrada es de ejemplo y no proviene de sistemas del Colegio.</p>
+  </div>
+
+  <div class="chips" id="chips" role="group" aria-label="Opciones sugeridas"></div>
+
+  <form class="composer" id="form" autocomplete="off">
+    <label class="sr" for="input">Escriba su consulta</label>
+    <input id="input" type="text" placeholder="Escriba su consulta…" maxlength="140" enterkeyhint="send">
+    <button class="send" id="send" type="submit" aria-label="Enviar mensaje">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 12 20 4l-4 8 4 8z"></path>
+      </svg>
+    </button>
+  </form>
+
+  <footer>
+    <span>Demostración desarrollada por <b>Mana&nbsp;Solutions</b> · datos de&nbsp;ejemplo</span>
+    <button class="reset" id="reset" type="button">Reiniciar</button>
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var log   = document.getElementById('log'),
+      chips = document.getElementById('chips'),
+      form  = document.getElementById('form'),
+      input = document.getElementById('input'),
+      send  = document.getElementById('send'),
+      reset = document.getElementById('reset');
+
+  var busy = false;
+  var pending = null;          // key of the field the assistant is waiting for
+  var data = {};               // captured demo data
+
+  /* ---------- helpers ---------- */
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function hora(){
+    var d = new Date(), h = d.getHours(), m = d.getMinutes();
+    var ampm = h < 12 ? 'a. m.' : 'p. m.';
+    var h12 = h % 12; if (h12 === 0) h12 = 12;
+    return h12 + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
+  }
+
+  function saludo(){
+    var h = new Date().getHours();
+    if (h < 12) return 'Buenos días';
+    if (h < 19) return 'Buenas tardes';
+    return 'Buenas noches';
+  }
+
+  function scrollDown(smooth){
+    log.scrollTo({ top: log.scrollHeight, behavior: smooth === false ? 'auto' : 'smooth' });
+  }
+
+  function bubble(who, html){
+    var row = document.createElement('div');
+    row.className = 'row ' + who;
+    var b = document.createElement('div');
+    b.className = 'bubble';
+    b.innerHTML = html + '<span class="time">' + hora() + '</span>';
+    row.appendChild(b);
+    log.appendChild(row);
+    scrollDown();
+    return row;
+  }
+
+  function typing(){
+    var row = document.createElement('div');
+    row.className = 'row bot';
+    row.innerHTML = '<div class="bubble typing" aria-label="Escribiendo"><i></i><i></i><i></i></div>';
+    log.appendChild(row);
+    scrollDown();
+    return row;
+  }
+
+  function setBusy(v){
+    busy = v;
+    send.disabled = v;
+  }
+
+  function clearChips(){
+    chips.innerHTML = '';
+  }
+
+  function showChips(list){
+    clearChips();
+    if (!list) return;
+    list.forEach(function(c, i){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip' + (c[2] === 'ghost' ? ' ghost' : '');
+      b.textContent = c[0];
+      b.style.animationDelay = (i * 45) + 'ms';
+      b.addEventListener('click', function(){
+        if (busy) return;
+        pending = null;
+        bubble('user', esc(c[0]));
+        clearChips();
+        go(c[1]);
+      });
+      chips.appendChild(b);
+    });
+    scrollDown();
+  }
+
+  /* Plays an assistant turn: typing indicator, then each message. */
+  function say(msgs, after){
+    setBusy(true);
+    var i = 0;
+    (function step(){
+      if (i >= msgs.length){ setBusy(false); if (after) after(); return; }
+      var t = typing();
+      var delay = i === 0 ? 800 : 520;
+      setTimeout(function(){
+        t.remove();
+        bubble('bot', msgs[i]);
+        i++;
+        setTimeout(step, 260);
+      }, delay);
+    })();
+  }
+
+  /* ---------- copy ---------- */
+
+  var MENU = [
+    ['Trámites y requisitos', 'tramites'],
+    ['Cursos y actualización profesional', 'cursos'],
+    ['Estado de colegiatura', 'colegiatura'],
+    ['Contacto y horarios', 'contacto']
+  ];
+
+  var MAS = '¿Le ayudo con algo más?';
+
+  var CIERRE = [
+    ['Otro trámite', 'tramites'],
+    ['Cursos', 'cursos'],
+    ['Hablar con un funcionario', 'funcionario'],
+    ['Volver al inicio', 'menu', 'ghost']
+  ];
+
+  var CIERRE_ALT = [
+    ['Trámites y requisitos', 'tramites'],
+    ['Cursos', 'cursos'],
+    ['Estado de colegiatura', 'colegiatura'],
+    ['Volver al inicio', 'menu', 'ghost']
+  ];
+
+  var CURSOS = [
+    {
+      id: 'bio',
+      nombre: 'Diseño bioclimático aplicado al trópico húmedo',
+      meta: '18 y 19 de setiembre · virtual en vivo · 12 horas'
+    },
+    {
+      id: 'sismico',
+      nombre: 'Actualización del Código Sísmico y su aplicación en obra',
+      meta: '3 de octubre · presencial · 8 horas'
+    },
+    {
+      id: 'proyectos',
+      nombre: 'Gestión de proyectos y control de costos',
+      meta: '24 y 25 de octubre · modalidad híbrida · 16 horas'
+    }
+  ];
+
+  var NODES = {
+
+    /* ---- inicio ---- */
+    inicio: {
+      msgs: function(){
+        return [
+          saludo() + '. Le saluda el asistente virtual del Colegio de Arquitectos de Costa Rica.',
+          'Atiendo consultas de las personas colegiadas las 24 horas, todos los días. ¿En qué le puedo ayudar?'
+        ];
+      },
+      chips: MENU
+    },
+
+    menu: {
+      msgs: ['Con gusto. ¿Sobre cuál tema desea consultar?'],
+      chips: MENU
+    },
+
+    /* ---- trámites ---- */
+    tramites: {
+      msgs: ['Estos son los trámites que le puedo explicar paso a paso:'],
+      chips: [
+        ['Incorporación al Colegio', 'incorporacion'],
+        ['Renovación anual', 'renovacion'],
+        ['Certificación de colegiado', 'certificacion'],
+        ['Volver al inicio', 'menu', 'ghost']
+      ]
+    },
+
+    incorporacion: {
+      msgs: [
+        '<span class="tt">Incorporación al Colegio</span>' +
+        'Requisitos<span class="ej">ejemplo</span>' +
+        '<ol>' +
+        '<li>Título universitario en Arquitectura, debidamente inscrito.</li>' +
+        '<li>Copia de la cédula de identidad por ambos lados.</li>' +
+        '<li>Fotografía reciente, tamaño pasaporte.</li>' +
+        '<li>Formulario de solicitud firmado.</li>' +
+        '<li>Comprobante del pago de incorporación.</li>' +
+        '</ol>',
+        'La solicitud se presenta en línea. La resolución toma entre 10 y 15 días hábiles y se le notifica al correo registrado. Luego se le convoca al acto de juramentación.',
+        MAS
+      ],
+      chips: CIERRE
+    },
+
+    renovacion: {
+      msgs: [
+        '<span class="tt">Renovación anual de la colegiatura</span>' +
+        '<ol>' +
+        '<li>Ingrese al portal de la persona colegiada con su número y contraseña.</li>' +
+        '<li>Verifique que su correo y teléfono estén actualizados.</li>' +
+        '<li>Cancele la cuota anual vigente por transferencia, tarjeta o en ventanilla.</li>' +
+        '<li>Descargue el comprobante que queda en su expediente.</li>' +
+        '</ol>',
+        'La renovación se refleja en el sistema en un máximo de 24 horas. Si su cuota tiene atraso, le puedo indicar cómo ponerse al día.',
+        MAS
+      ],
+      chips: CIERRE
+    },
+
+    certificacion: {
+      msgs: [
+        '<span class="tt">Certificación de condición de colegiado</span>' +
+        'Se emite en formato digital con firma electrónica.<span class="ej">ejemplo</span>' +
+        '<ul>' +
+        '<li>Indique su número de colegiado y el uso que le dará.</li>' +
+        '<li>Debe encontrarse al día con la cuota.</li>' +
+        '<li>Emisión estimada: 1 día hábil.</li>' +
+        '<li>Se envía al correo registrado en su expediente.</li>' +
+        '</ul>',
+        MAS
+      ],
+      chips: CIERRE
+    },
+
+    /* ---- cursos ---- */
+    cursos: {
+      msgs: [
+        'Estos son los próximos cursos de actualización profesional<span class="ej">fechas de ejemplo</span>' +
+        '<div class="card" style="border-top:0">' +
+          CURSOS.map(function(c){
+            return '<div class="course"><b>' + c.nombre + '</b><em>' + c.meta + '</em></div>';
+          }).join('') +
+        '</div>',
+        'Puedo reservarle un cupo en este momento y enviarle la confirmación por correo.'
+      ],
+      chips: [
+        ['Reservar un cupo', 'reserva'],
+        ['Contacto y horarios', 'contacto'],
+        ['Volver al inicio', 'menu', 'ghost']
+      ]
+    },
+
+    reserva: {
+      msgs: ['Con gusto. ¿En cuál curso desea reservar?'],
+      chips: [
+        ['Diseño bioclimático', 'reserva_bio'],
+        ['Código Sísmico', 'reserva_sismico'],
+        ['Gestión de proyectos', 'reserva_proyectos'],
+        ['Mejor después', 'menu', 'ghost']
+      ]
+    },
+
+    reserva_nombre: {
+      msgs: function(){
+        return [
+          'Excelente elección: <strong>' + data.curso.nombre + '</strong>.',
+          '¿Me indica su nombre completo, tal como aparece en su registro?'
+        ];
+      },
+      ask: 'nombre'
+    },
+
+    reserva_correo: {
+      msgs: function(){
+        return ['Gracias, ' + esc(data.nombre) + '. ¿A cuál correo electrónico le envío la confirmación?'];
+      },
+      ask: 'correo'
+    },
+
+    reserva_ok: {
+      msgs: function(){
+        return [
+          'Un momento, registro su cupo.',
+          '<span class="tt">Reserva confirmada</span>' +
+          '<div class="card">' +
+            '<div class="r"><span>Curso</span><span>' + data.curso.corto + '</span></div>' +
+            '<div class="r"><span>Fecha</span><span>' + data.curso.fecha + '</span></div>' +
+            '<div class="r"><span>A nombre de</span><span>' + esc(data.nombre) + '</span></div>' +
+            '<div class="r"><span>Correo</span><span>' + esc(data.correo) + '</span></div>' +
+            '<div class="r ok"><span>Estado</span><span>Cupo reservado</span></div>' +
+          '</div>' +
+          '<span class="ej">datos de ejemplo</span>',
+          'En el sistema real recibiría el comprobante y el enlace de pago en su correo, con recordatorio 48 horas antes del curso.',
+          MAS
+        ];
+      },
+      chips: CIERRE_ALT
+    },
+
+    /* ---- colegiatura ---- */
+    colegiatura: {
+      msgs: [
+        'Con gusto reviso el estado de su colegiatura.',
+        '¿Me indica su número de colegiado? Puede escribirlo en el campo de abajo.'
+      ],
+      ask: 'colegiado'
+    },
+
+    colegiatura_ok: {
+      msgs: function(){
+        return [
+          'Consulto el registro, un momento.',
+          '<span class="tt">Estado de colegiatura</span>' +
+          '<div class="card">' +
+            '<div class="r"><span>Número</span><span>' + esc(data.colegiado) + '</span></div>' +
+            '<div class="r ok"><span>Condición</span><span>Al día</span></div>' +
+            '<div class="r"><span>Vigencia</span><span>31 de diciembre de 2026</span></div>' +
+            '<div class="r"><span>Última cuota</span><span>Julio 2026</span></div>' +
+          '</div>' +
+          '<span class="ej">datos de ejemplo</span>',
+          'Estando al día puede solicitar certificaciones y matricular cursos con la tarifa preferencial.',
+          MAS
+        ];
+      },
+      chips: [
+        ['Ver comprobante de pago', 'comprobante'],
+        ['Certificación de colegiado', 'certificacion'],
+        ['Cursos', 'cursos'],
+        ['Volver al inicio', 'menu', 'ghost']
+      ]
+    },
+
+    comprobante: {
+      msgs: function(){
+        return [
+          '<span class="tt">Comprobante de cuota</span>' +
+          '<div class="card" style="border-top:0">' +
+            '<div class="r"><span>Recibo</span><span>N.° 000-00000</span></div>' +
+            '<div class="r"><span>Concepto</span><span>Cuota de colegiatura</span></div>' +
+            '<div class="r"><span>Periodo</span><span>Julio 2026</span></div>' +
+            '<div class="r"><span>Colegiado</span><span>' + esc(data.colegiado || '—') + '</span></div>' +
+            '<div class="r ok"><span>Estado</span><span>Cancelado</span></div>' +
+          '</div>' +
+          '<span class="ej">documento de ejemplo</span>',
+          'En el sistema real este comprobante se envía en PDF al correo registrado en el momento de solicitarlo.',
+          MAS
+        ];
+      },
+      chips: CIERRE
+    },
+
+    /* ---- contacto ---- */
+    contacto: {
+      msgs: [
+        '<span class="tt">Horario de atención</span>' +
+        '<ul>' +
+        '<li>Lunes a viernes, de 8:00 a. m. a 4:00 p. m.</li>' +
+        '<li>Sábados, domingos y feriados: cerrado.</li>' +
+        '<li>Este asistente atiende las 24 horas, todos los días.</li>' +
+        '</ul>',
+        'Las oficinas del Colegio se ubican en la sede del CFIA, en Curridabat, San José. Los trámites en ventanilla se atienden por orden de llegada.',
+        'Si prefiere atención personalizada, con gusto lo comunico con un funcionario.'
+      ],
+      chips: [
+        ['Comunicarme con un funcionario', 'funcionario'],
+        ['Trámites y requisitos', 'tramites'],
+        ['Volver al inicio', 'menu', 'ghost']
+      ]
+    },
+
+    funcionario: {
+      msgs: [
+        'Con gusto. Traslado su consulta al área de servicio al colegiado junto con el resumen de esta conversación.',
+        'Un funcionario le responderá dentro del horario de atención. Mientras tanto, puedo seguir ayudándole con lo que necesite.<span class="ej">en esta demostración no se envía ningún mensaje real</span>',
+        MAS
+      ],
+      chips: CIERRE_ALT
+    },
+
+    /* ---- respaldo ---- */
+    fallback: {
+      msgs: [
+        'Gracias por escribir. En esta demostración puedo mostrarle los siguientes temas:'
+      ],
+      chips: MENU
+    }
+  };
+
+  /* course selection shortcuts */
+  ['bio','sismico','proyectos'].forEach(function(id, i){
+    NODES['reserva_' + id] = {
+      run: function(){
+        var c = CURSOS[i];
+        data.curso = {
+          nombre: c.nombre,
+          corto: ['Diseño bioclimático','Código Sísmico','Gestión de proyectos'][i],
+          fecha: ['18 y 19 de setiembre','3 de octubre','24 y 25 de octubre'][i]
+        };
+        return 'reserva_nombre';
+      }
+    };
+  });
+
+  /* ---------- engine ---------- */
+
+  function go(id){
+    var node = NODES[id];
+    if (!node) return;
+    if (node.run){ go(node.run()); return; }
+    var msgs = typeof node.msgs === 'function' ? node.msgs() : node.msgs;
+    say(msgs, function(){
+      if (node.ask){ pending = node.ask; input.focus({ preventScroll:true }); }
+      showChips(node.chips);
+    });
+  }
+
+  function handleAsk(text){
+    var key = pending;
+    pending = null;
+
+    if (key === 'nombre'){
+      data.nombre = text.slice(0, 48);
+      go('reserva_correo');
+      return;
+    }
+    if (key === 'correo'){
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(text)){
+        say(['Ese correo no parece estar completo. ¿Me lo confirma de nuevo, por favor?'], function(){
+          pending = 'correo';
+          input.focus({ preventScroll:true });
+        });
+        return;
+      }
+      data.correo = text.slice(0, 60);
+      go('reserva_ok');
+      return;
+    }
+    if (key === 'colegiado'){
+      data.colegiado = text.slice(0, 20).toUpperCase();
+      go('colegiatura_ok');
+      return;
+    }
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (busy) return;
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    bubble('user', esc(text));
+    clearChips();
+    if (pending) handleAsk(text);
+    else go('fallback');
+  });
+
+  reset.addEventListener('click', function(){
+    if (busy) return;
+    start();
+  });
+
+  function start(){
+    pending = null;
+    data = {};
+    clearChips();
+    log.innerHTML =
+      '<div class="divider"><span>Hoy</span></div>' +
+      '<p class="note">Demostración interactiva. Toda la información mostrada es de ejemplo y no proviene de sistemas del Colegio.</p>';
+    scrollDown(false);
+    go('inicio');
+  }
+
+  start();
+})();
+</script>
+</body>
+</html>
